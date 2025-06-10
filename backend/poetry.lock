@@ -61,6 +61,80 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "djangorestframework"
+version = "3.16.0"
+description = "Web APIs for Django, made easy."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "djangorestframework-3.16.0-py3-none-any.whl", hash = "sha256:bea7e9f6b96a8584c5224bfb2e4348dfb3f8b5e34edbecb98da258e892089361"},
+    {file = "djangorestframework-3.16.0.tar.gz", hash = "sha256:f022ff46613584de994c0c6a4aebbace5fd700555fbe9d33b865ebf173eba6c9"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+
+[[package]]
+name = "djangorestframework-simplejwt"
+version = "5.5.0"
+description = "A minimal JSON Web Token authentication plugin for Django REST Framework"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "djangorestframework_simplejwt-5.5.0-py3-none-any.whl", hash = "sha256:4ef6b38af20cdde4a4a51d1fd8e063cbbabb7b45f149cc885d38d905c5a62edb"},
+    {file = "djangorestframework_simplejwt-5.5.0.tar.gz", hash = "sha256:474a1b737067e6462b3609627a392d13a4da8a08b1f0574104ac6d7b1406f90e"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+djangorestframework = ">=3.14"
+pyjwt = ">=1.7.1,<2.10.0"
+
+[package.extras]
+crypto = ["cryptography (>=3.3.1)"]
+dev = ["Sphinx (>=1.6.5,<2)", "cryptography", "freezegun", "ipython", "pre-commit", "pytest", "pytest-cov", "pytest-django", "pytest-watch", "pytest-xdist", "python-jose (==3.3.0)", "pyupgrade", "ruff", "sphinx_rtd_theme (>=0.1.9)", "tox", "twine", "wheel", "yesqa"]
+doc = ["Sphinx (>=1.6.5,<2)", "sphinx_rtd_theme (>=0.1.9)"]
+lint = ["pre-commit", "pyupgrade", "ruff", "yesqa"]
+python-jose = ["python-jose (==3.3.0)"]
+test = ["cryptography", "freezegun", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
+
+[[package]]
+name = "factory-boy"
+version = "3.3.3"
+description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "factory_boy-3.3.3-py2.py3-none-any.whl", hash = "sha256:1c39e3289f7e667c4285433f305f8d506efc2fe9c73aaea4151ebd5cdea394fc"},
+    {file = "factory_boy-3.3.3.tar.gz", hash = "sha256:866862d226128dfac7f2b4160287e899daf54f2612778327dd03d0e2cb1e3d03"},
+]
+
+[package.dependencies]
+Faker = ">=0.7.0"
+
+[package.extras]
+dev = ["Django", "Pillow", "SQLAlchemy", "coverage", "flake8", "isort", "mongoengine", "mongomock", "mypy", "tox", "wheel (>=0.32.0)", "zest.releaser[recommended]"]
+doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
+
+[[package]]
+name = "faker"
+version = "37.3.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "faker-37.3.0-py3-none-any.whl", hash = "sha256:48c94daa16a432f2d2bc803c7ff602509699fca228d13e97e379cd860a7e216e"},
+    {file = "faker-37.3.0.tar.gz", hash = "sha256:77b79e7a2228d57175133af0bbcdd26dc623df81db390ee52f5104d46c010f2f"},
+]
+
+[package.dependencies]
+tzdata = "*"
+
+[[package]]
 name = "filelock"
 version = "3.18.0"
 description = "A platform independent file lock."
@@ -219,6 +293,24 @@ files = [
 ]
 
 [[package]]
+name = "pyjwt"
+version = "2.9.0"
+description = "JSON Web Token implementation in Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "PyJWT-2.9.0-py3-none-any.whl", hash = "sha256:3b02fb0f44517787776cf48f2ae25d8e14f300e6d7545a4315cee571a415e850"},
+    {file = "pyjwt-2.9.0.tar.gz", hash = "sha256:7e1e5b56cc735432a7369cbfa0efe50fa113ebecdc04ae6922deba8b84582d0c"},
+]
+
+[package.extras]
+crypto = ["cryptography (>=3.4.0)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.4.0)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
+docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
@@ -332,7 +424,6 @@ description = "Provider of IANA time zone data"
 optional = false
 python-versions = ">=2"
 groups = ["main"]
-markers = "sys_platform == \"win32\""
 files = [
     {file = "tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8"},
     {file = "tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9"},
@@ -362,4 +453,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "88821f24a6a8562fd36a576a1ba3a7bce5bd3615049fd875d3208e17ed12392e"
+content-hash = "50e849cf653987361caed1eb7cd2863b0a062e183c8bdeac27e791574ddf7979"

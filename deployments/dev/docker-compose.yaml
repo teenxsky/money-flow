@@ -35,8 +35,8 @@ services:
         "0.0.0.0:${BACKEND_PORT}",
       ]
     hostname: ${BACKEND_HOST}
-    ports:
-      - ${BACKEND_PORT}:${BACKEND_PORT}
+    expose:
+      - ${BACKEND_PORT}
     volumes:
       - ./../../backend:/backend
     environment:

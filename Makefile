@@ -76,20 +76,33 @@ migrate-dev: ## Run Django migrations for the development environment
 
 .PHONY: makemigrations-dev
 makemigrations-dev: ## Make migrations for the development environment
-	@$(COMPOSE_DEV) exec backend sh -c \
-	"cd src && poetry run python manage.py makemigrations"
+	@sh -c 'read -p "Enter the django app(apps) name(names) [Enter for All]: " app_name && \
+	$(COMPOSE_DEV) exec backend sh -c \
+	"cd src && poetry run python manage.py makemigrations $$app_name"'
 
 .PHONY: startapp-dev
 startapp-dev: ## Create a new Django app in the development environment
-	@sh -c 'read -p "Enter the django app name: " dep_name && \
-	echo "Creating Django app: $$dep_name" && \
+	@sh -c 'read -p "Enter the django app name: " app_name && \
+	echo "Creating Django app: $$app_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
-	"cd src/apps && poetry run python ../manage.py startapp $$dep_name"'
+	"cd src/apps && poetry run python ../manage.py startapp $$app_name"'
 
 .PHONY: createsuperuser-dev
 createsuperuser-dev: ## Create a superuser in the development environment
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py createsuperuser"
+
+.PHONY: run-tests-dev
+run-tests-dev: ## Run tests for the development environment
+	@$(COMPOSE_DEV) exec backend sh -c \
+	"cd src && poetry run python manage.py test apps"
+
+.PHONY: run-tests-app-dev
+run-tests-app-dev: ## Run tests for the development environment
+	@sh -c 'read -p "Enter the django app name: " app_name && \
+	echo "Testing Django app: $$app_name" && \
+	$(COMPOSE_DEV) exec backend sh -c \
+	"cd src && poetry run python manage.py test apps.$$app_name.tests"'
 
 
 #--------------- LINT/FORMAT COMMANDS ---------------#

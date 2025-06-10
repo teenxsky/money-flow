@@ -9,18 +9,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Application definition
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-DEBUG = os.getenv('DJANGO_DEBUG', True)
+DEBUG = int(os.getenv('DJANGO_DEBUG', True))
 ALLOWED_HOSTS = [
     f'api.{os.getenv("DOMAIN_HOST")}',
 ]
 
 INSTALLED_APPS = [
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Project apps
+    'apps.users',
+    # Third-party apps
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
