@@ -1,0 +1,1146 @@
+swagger: "2.0"
+info:
+  title: Documentation API Users
+  description: Documentation API
+  termsOfService: https://www.google.com/policies/terms/
+  license:
+    name: Apache License
+  version: v1
+host: api.localhost
+schemes:
+  - http
+basePath: /v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - Bearer: []
+paths:
+  /categories/:
+    get:
+      operationId: categories_list
+      summary: List all categories
+      description:
+        Returns a list of all transaction categories with their associated
+        transaction types.
+      parameters: []
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Salary
+                transaction_type:
+                  type: string
+                  example: Income
+      tags:
+        - categories
+      security: []
+    parameters: []
+  /categories/create/:
+    post:
+      operationId: categories_create_create
+      summary: Create a new category
+      description:
+        Creates a new transaction category with the specified name and
+        transaction type. Requires admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+              - transaction_type
+            type: object
+            properties:
+              name:
+                type: string
+                example: Salary
+              transaction_type:
+                type: integer
+                example: 1
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: object
+                example:
+                  name:
+                    - Invalid category name.
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    parameters: []
+  /categories/{id}/:
+    get:
+      operationId: categories_read
+      summary: Get category details
+      description: Retrieves detailed information about a specific category by ID.
+      parameters:
+        - name: id
+          in: path
+          description: Category ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /categories/{id}/delete/:
+    delete:
+      operationId: categories_delete_delete
+      summary: Delete a category
+      description: Deletes a category by ID. Requires admin privileges.
+      parameters:
+        - name: id
+          in: path
+          description: Category ID
+          required: true
+          type: integer
+      responses:
+        "204":
+          description: Category deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /categories/{id}/update/:
+    put:
+      operationId: categories_update_update
+      summary: Update a category
+      description:
+        Updates an existing category with new information. Requires admin
+        privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+              - transaction_type
+            type: object
+            properties:
+              name:
+                type: string
+                example: Salary
+              transaction_type:
+                type: integer
+                example: 1
+        - name: id
+          in: path
+          description: Category ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: object
+                example:
+                  name:
+                    - Invalid category name.
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /statuses/:
+    get:
+      operationId: statuses_list
+      summary: List all statuses
+      description: Returns a list of all transaction statuses.
+      parameters: []
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Pending
+      tags:
+        - statuses
+      security: []
+    parameters: []
+  /statuses/create/:
+    post:
+      operationId: statuses_create_create
+      summary: Create a new status
+      description:
+        Creates a new transaction status with the specified name. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                type: string
+                example: Completed
+      responses:
+        "201":
+          description: Status created successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Completed
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: object
+                example:
+                  name:
+                    - This field is required.
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    parameters: []
+  /statuses/{id}/:
+    get:
+      operationId: statuses_read
+      summary: Get status details
+      description: Retrieves detailed information about a specific status by ID.
+      parameters:
+        - name: id
+          in: path
+          description: Status ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Status found
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Pending
+        "404":
+          description: Status not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: Status with ID 999 not found
+      tags:
+        - statuses
+      security: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /statuses/{id}/delete/:
+    delete:
+      operationId: statuses_delete_delete
+      summary: Delete a status
+      description: Deletes a status by ID. Requires admin privileges.
+      parameters:
+        - name: id
+          in: path
+          description: Status ID
+          required: true
+          type: integer
+      responses:
+        "204":
+          description: Status deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Status not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: Status with ID 999 not found
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /statuses/{id}/update/:
+    put:
+      operationId: statuses_update_update
+      summary: Update a status
+      description:
+        Updates an existing status with new information. Requires admin
+        privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                type: string
+                example: In Progress
+        - name: id
+          in: path
+          description: Status ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Status updated successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: In Progress
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: object
+                example:
+                  name:
+                    - Invalid status name.
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Status not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: Status with ID 999 not found
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /subcategories/:
+    get:
+      operationId: subcategories_list
+      summary: List all subcategories
+      description:
+        Returns a list of all transaction subcategories with their associated
+        categories.
+      parameters: []
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Groceries
+                category:
+                  type: string
+                  example: Food
+      tags:
+        - subcategories
+      security: []
+    parameters: []
+  /subcategories/create/:
+    post:
+      operationId: subcategories_create_create
+      summary: Create a new subcategory
+      description:
+        Creates a new transaction subcategory with the specified name and
+        category. Requires admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+              - category_id
+            type: object
+            properties:
+              name:
+                type: string
+                example: Groceries
+              category_id:
+                type: integer
+                example: 1
+      responses:
+        "201":
+          description: Subcategory created successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Groceries
+              category:
+                type: string
+                example: Food
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: string
+                example: Invalid subcategory name.
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    parameters: []
+  /subcategories/{id}/:
+    get:
+      operationId: subcategories_read
+      summary: Get subcategory details
+      description:
+        Retrieves detailed information about a specific subcategory by
+        ID.
+      parameters:
+        - name: id
+          in: path
+          description: Subcategory ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Subcategory found
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Groceries
+              category:
+                type: string
+                example: Food
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: string
+                example: Subcategory not found
+      tags:
+        - subcategories
+      security: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /subcategories/{id}/delete/:
+    delete:
+      operationId: subcategories_delete_delete
+      summary: Delete a subcategory
+      description: Deletes a subcategory by ID. Requires admin privileges.
+      parameters:
+        - name: id
+          in: path
+          description: Subcategory ID
+          required: true
+          type: integer
+      responses:
+        "204":
+          description: Subcategory deleted successfully
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: string
+                example: Subcategory not found
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /subcategories/{id}/update/:
+    put:
+      operationId: subcategories_update_update
+      summary: Update a subcategory
+      description:
+        Updates an existing subcategory with new information. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+              - category_id
+            type: object
+            properties:
+              name:
+                type: string
+                example: Organic Groceries
+              category_id:
+                type: integer
+                example: 1
+        - name: id
+          in: path
+          description: Subcategory ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Subcategory updated successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Organic Groceries
+              category:
+                type: string
+                example: Food
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation error
+              error:
+                type: string
+                example: Invalid subcategory name.
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /types/:
+    get:
+      operationId: types_list
+      summary: List all transaction types
+      description: Returns a list of all transaction types.
+      parameters: []
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Income
+      tags:
+        - types
+      security: []
+    parameters: []
+  /types/create/:
+    post:
+      operationId: types_create_create
+      summary: Create a new transaction type
+      description:
+        Creates a new transaction type with the specified name. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                type: string
+                example: Expense
+      responses:
+        "201":
+          description: Transaction type created successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 2
+              name:
+                type: string
+                example: Expense
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: object
+                example:
+                  name:
+                    - This field is required.
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - types
+      security:
+        - Bearer: []
+    parameters: []
+  /types/{id}/:
+    get:
+      operationId: types_read
+      summary: Get transaction type details
+      description:
+        Retrieves detailed information about a specific transaction type
+        by ID.
+      parameters:
+        - name: id
+          in: path
+          description: Transaction Type ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Transaction type found
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Income
+        "404":
+          description: Transaction type not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: TransactionType with ID 999 not found
+      tags:
+        - types
+      security: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /types/{id}/delete/:
+    delete:
+      operationId: types_delete_delete
+      summary: Delete a transaction type
+      description: Deletes a transaction type by ID. Requires admin privileges.
+      parameters:
+        - name: id
+          in: path
+          description: Transaction Type ID
+          required: true
+          type: integer
+      responses:
+        "204":
+          description: Transaction type deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Transaction type not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: TransactionType with ID 999 not found
+      tags:
+        - types
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /types/{id}/update/:
+    put:
+      operationId: types_update_update
+      summary: Update a transaction type
+      description:
+        Updates an existing transaction type with new information. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                type: string
+                example: Transfer
+        - name: id
+          in: path
+          description: Transaction Type ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Transaction type updated successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Transfer
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: object
+                example:
+                  name:
+                    - Invalid transaction type name.
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Transaction type not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: string
+                example: TransactionType with ID 999 not found
+      tags:
+        - types
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /users/login/:
+    post:
+      operationId: users_login_create
+      summary: Log in a user
+      description:
+        Authenticates a user with email and password, returns access and
+        refresh tokens
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - email
+              - password
+            type: object
+            properties:
+              email:
+                type: string
+                example: user@example.com
+              password:
+                type: string
+                example: SecurePassword123
+      responses:
+        "200":
+          description: User logged in successfully with tokens
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User logged in successfully!
+              access:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGci...
+              refresh:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGci...
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              error:
+                type: object
+                example:
+                  email:
+                    - This field is required.
+        "401":
+          description: Authentication failed
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Authentication failed
+              error:
+                type: string
+                example: Invalid credentials
+      tags:
+        - users
+      security: []
+    parameters: []
+  /users/logout/:
+    post:
+      operationId: users_logout_create
+      summary: Log out a user
+      description: Blacklists the user's refresh token, effectively logging them out
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - refresh
+            type: object
+            properties:
+              refresh:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+      responses:
+        "200":
+          description: User logged out successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User logged out successfully!
+        "400":
+          description: Invalid token or validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Authentication failed
+              error:
+                type: string
+                example: Token is invalid or expired
+      tags:
+        - users
+      security: []
+    parameters: []
+  /users/me/:
+    get:
+      operationId: users_me_list
+      summary: Get user details
+      description: Retrieves details of the currently authenticated user
+      parameters: []
+      responses:
+        "200":
+          description: User details retrieved successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              email:
+                type: string
+                example: user@example.com
+              first_name:
+                type: string
+                example: John
+              last_name:
+                type: string
+                example: Doe
+        "401":
+          description: Authentication credentials were not provided
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: Authentication credentials were not provided.
+      tags:
+        - users
+      security:
+        - Bearer: []
+    parameters: []
+  /users/refresh/:
+    post:
+      operationId: users_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TokenRefresh"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/TokenRefresh"
+      tags:
+        - users
+    parameters: []
+  /users/register/:
+    post:
+      operationId: users_register_create
+      summary: Register a new user
+      description:
+        Creates a new user account with email, password, and optional name
+        details
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - email
+              - password
+            type: object
+            properties:
+              email:
+                type: string
+                example: user@example.com
+              password:
+                type: string
+                example: SecurePassword123
+              first_name:
+                type: string
+                example: John
+              last_name:
+                type: string
+                example: Doe
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User created!
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              error:
+                type: object
+                example:
+                  email:
+                    - This field is required.
+      tags:
+        - users
+      security: []
+    parameters: []
+definitions:
+  CategoryDetail:
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      transaction_type:
+        title: Transaction type
+        type: string
+        readOnly: true
+  TokenRefresh:
+    required:
+      - refresh
+    type: object
+    properties:
+      refresh:
+        title: Refresh
+        type: string
+        minLength: 1
+      access:
+        title: Access
+        type: string
+        readOnly: true
+        minLength: 1

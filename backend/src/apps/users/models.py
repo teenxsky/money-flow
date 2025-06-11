@@ -27,7 +27,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, db_index=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=50, blank=True)

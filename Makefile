@@ -103,6 +103,11 @@ run-tests-app-dev: ## Run tests for the development environment
 	echo "Testing Django app: $$app_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py test apps.$$app_name.tests"'
+	
+.PHONY: load_reference-data-dev
+load_reference-data-dev: ## Load reference data for the development environment
+	@$(COMPOSE_DEV) exec backend sh -c \
+	"cd src && poetry run python manage.py load_reference"
 
 
 #--------------- LINT/FORMAT COMMANDS ---------------#

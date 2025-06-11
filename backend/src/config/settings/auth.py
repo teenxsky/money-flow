@@ -2,7 +2,6 @@
 Authentication and password validation settings for money-flow project.
 """
 
-# noqa: E501
 from datetime import timedelta
 
 from config.settings.base import DEBUG, SECRET_KEY
@@ -61,3 +60,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# YASG settings
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+        },
+    },
+    'SECURITY_REQUIREMENTS': None,
+}

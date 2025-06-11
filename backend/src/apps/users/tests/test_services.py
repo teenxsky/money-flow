@@ -10,12 +10,12 @@ from rest_framework_simplejwt.token_blacklist.models import (
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
+from apps.users.services import login, logout, register
 from apps.users.tests.factories import UserFactory
-from apps.users.usecase import login, logout, register
 
 
-class RegisterUseCaseTests(TestCase):
-    """Test suite for the register function in usecase."""
+class RegisterServiceTests(TestCase):
+    """Test suite for the register function in service."""
 
     def setUp(self):
         fake_user = UserFactory.build()
@@ -74,9 +74,9 @@ class RegisterUseCaseTests(TestCase):
             )
 
 
-class LoginUseCaseTests(TestCase):
+class LoginServiceTests(TestCase):
     """
-    Test suite for the login function in usecase.
+    Test suite for the login function in service.
     """
 
     def setUp(self):
@@ -130,9 +130,9 @@ class LoginUseCaseTests(TestCase):
             login(email=self.email, password=self.password)
 
 
-class LogoutUseCaseTests(TransactionTestCase):
+class LogoutServiceTests(TransactionTestCase):
     """
-    Test suite for the logout function in usecase.
+    Test suite for the logout function in service.
     """
 
     def setUp(self):

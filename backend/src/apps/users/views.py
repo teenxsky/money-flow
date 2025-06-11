@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -13,13 +15,61 @@ from apps.users.serializers import (
     UserLogoutSerializer,
     UserRegisterSerializer,
 )
-from apps.users.usecase import login, logout, register
+from apps.users.services import login, logout, register
 
 
 class UserRegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
 
+    @swagger_auto_schema(
+        operation_summary='Register a new user',
+        operation_description='Creates a new user account with email, password, '
+        'and optional name details',
+        security=[],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email', 'password'],
+            properties={
+                'email': openapi.Schema(
+                    type=openapi.TYPE_STRING, example='user@example.com'
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING, example='SecurePassword123'
+                ),
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING, example='John'),
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING, example='Doe'),
+            },
+        ),
+        responses={
+            201: openapi.Response(
+                description='User created successfully',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='User created!'
+                        )
+                    },
+                ),
+            ),
+            400: openapi.Response(
+                description='Validation error',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Validation failed'
+                        ),
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            example={'email': ['This field is required.']},
+                        ),
+                    },
+                ),
+            ),
+        },
+    )
     def post(self, request: Request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
@@ -43,6 +93,75 @@ class UserLoginView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
 
+    @swagger_auto_schema(
+        operation_summary='Log in a user',
+        operation_description='Authenticates a user with email and password, '
+        'returns access and refresh tokens',
+        security=[],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email', 'password'],
+            properties={
+                'email': openapi.Schema(
+                    type=openapi.TYPE_STRING, example='user@example.com'
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING, example='SecurePassword123'
+                ),
+            },
+        ),
+        responses={
+            200: openapi.Response(
+                description='User logged in successfully with tokens',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='User logged in successfully!',
+                        ),
+                        'access': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='eyJ0eXAiOiJKV1QiLCJhbGci...',
+                        ),
+                        'refresh': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='eyJ0eXAiOiJKV1QiLCJhbGci...',
+                        ),
+                    },
+                ),
+            ),
+            400: openapi.Response(
+                description='Validation error',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Validation failed'
+                        ),
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            example={'email': ['This field is required.']},
+                        ),
+                    },
+                ),
+            ),
+            401: openapi.Response(
+                description='Authentication failed',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Authentication failed'
+                        ),
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Invalid credentials'
+                        ),
+                    },
+                ),
+            ),
+        },
+    )
     def post(self, request: Request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
@@ -72,6 +191,51 @@ class UserLogoutView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserLogoutSerializer
 
+    @swagger_auto_schema(
+        operation_summary='Log out a user',
+        operation_description="Blacklists the user's refresh token, "
+        'effectively logging them out',
+        security=[],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['refresh'],
+            properties={
+                'refresh': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    example='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
+                ),
+            },
+        ),
+        responses={
+            200: openapi.Response(
+                description='User logged out successfully',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='User logged out successfully!',
+                        )
+                    },
+                ),
+            ),
+            400: openapi.Response(
+                description='Invalid token or validation error',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Authentication failed'
+                        ),
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='Token is invalid or expired',
+                        ),
+                    },
+                ),
+            ),
+        },
+    )
     def post(self, request: Request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
@@ -99,6 +263,43 @@ class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserDetailSerializer
 
+    @swagger_auto_schema(
+        operation_summary='Get user details',
+        operation_description='Retrieves details of the currently authenticated user',
+        security=[{'Bearer': []}],
+        responses={
+            200: openapi.Response(
+                description='User details retrieved successfully',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER, example=1),
+                        'email': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='user@example.com'
+                        ),
+                        'first_name': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='John'
+                        ),
+                        'last_name': openapi.Schema(
+                            type=openapi.TYPE_STRING, example='Doe'
+                        ),
+                    },
+                ),
+            ),
+            401: openapi.Response(
+                description='Authentication credentials were not provided',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example='Authentication credentials were not provided.',
+                        )
+                    },
+                ),
+            ),
+        },
+    )
     def get(self, request: Request):
         data = self.serializer_class(request.user).data
         return Response(data, status=status.HTTP_200_OK)
