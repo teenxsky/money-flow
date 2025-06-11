@@ -5,7 +5,7 @@ from apps.reference.enums.status import StatusEnum
 from apps.reference.models import Status
 
 
-class StatusCreateUpdateSerializer(serializers.Serializer):
+class StatusSerializer(serializers.Serializer):
     name = serializers.CharField()
 
     def validate_name(self, value):
@@ -14,7 +14,13 @@ class StatusCreateUpdateSerializer(serializers.Serializer):
                 f'Invalid status name. Must be one of: {StatusEnum.values()}'
             )
 
-        unique_validator = UniqueValidator(queryset=Status.objects.all())
+        instance_id = self.instance.id if self.instance else None
+
+        queryset = Status.objects.all()
+        if instance_id:
+            queryset = queryset.exclude(id=instance_id)
+
+        unique_validator = UniqueValidator(queryset=queryset)
         unique_validator(value, self.fields['name'])
 
         return value

@@ -6,10 +6,6 @@ __all__ = ['Category']
 
 
 class Category(models.Model):
-    """
-    Transaction category reference model
-    """
-
     name = models.CharField(max_length=50)
     transaction_type = models.ForeignKey(
         TransactionType,

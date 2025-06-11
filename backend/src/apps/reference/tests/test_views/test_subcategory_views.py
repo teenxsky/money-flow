@@ -62,7 +62,7 @@ class SubcategoryViewsTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.subcategory.name)
-        self.assertEqual(response.data['category'], self.category.name)
+        self.assertEqual(response.data['category_id'], self.category.id)
 
     def test_create_valid_subcategory(self):
         """Test creating a new subcategory with valid data."""

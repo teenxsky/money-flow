@@ -6,10 +6,6 @@ __all__ = ['Subcategory']
 
 
 class Subcategory(models.Model):
-    """
-    Subcategory reference model
-    """
-
     name = models.CharField(max_length=50)
     category = models.ForeignKey(
         Category,

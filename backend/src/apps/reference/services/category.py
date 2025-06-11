@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.exceptions import NotFound
-from rest_framework.validators import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 
 from apps.reference.enums import CategoryEnum
 from apps.reference.models import Category
+from apps.reference.models.transaction_type import TransactionType
 
 
 def get_all_categories():
@@ -35,13 +35,13 @@ def get_category_by_id(category_id: int):
         raise NotFound(f'Category with ID {category_id} not found') from err
 
 
-def create_category(name: str, transaction_type: str):
+def create_category(name: str, transaction_type: TransactionType):
     """
     Create new category with validation.
 
     Args:
         name (str): The name of the category to create.
-        transaction_type (str): The transaction type to associate with this category.
+        transaction_type (TransactionType): Transaction type to associate with category.
 
     Returns:
         Category: The newly created Category object.
@@ -71,14 +71,17 @@ def create_category(name: str, transaction_type: str):
     return Category.objects.create(name=name, transaction_type=transaction_type)
 
 
-def update_category(category_id: int, name: str = None, transaction_type: str = None):
+def update_category(
+    category_id: int, name: str = None, transaction_type: TransactionType = None
+):
     """
     Update existing category.
 
     Args:
         category_id (int): The ID of the category to update.
         name (str, optional): The new name for the category. Defaults to None.
-        transaction_type (str, optional): The new transaction type. Defaults to None.
+        transaction_type (TransactionType, optional): New transaction type.
+        Defaults to None.
 
     Returns:
         Category: The updated Category object.

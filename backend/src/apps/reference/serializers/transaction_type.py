@@ -5,7 +5,7 @@ from apps.reference.enums.transaction_type import TransactionTypeEnum
 from apps.reference.models import TransactionType
 
 
-class TransactionTypeCreateUpdateSerializer(serializers.Serializer):
+class TransactionTypeSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.IntegerField(required=False, read_only=True)
 

@@ -3,6 +3,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 
 from apps.reference.enums import SubcategoryEnum
 from apps.reference.models import Subcategory
+from apps.reference.models.category import Category
 
 
 def get_all_subcategories():
@@ -34,13 +35,13 @@ def get_subcategory_by_id(subcategory_id: int):
         raise NotFound('Subcategory not found') from error
 
 
-def create_subcategory(name: str, category: str):
+def create_subcategory(name: str, category: Category):
     """
     Create new subcategory with validation.
 
     Args:
         name (str): The name of the subcategory to create.
-        category: The category object to associate with the subcategory.
+        category (Category): The category object to associate with the subcategory.
 
     Returns:
         Subcategory: The newly created subcategory object.
@@ -71,14 +72,16 @@ def create_subcategory(name: str, category: str):
     return Subcategory.objects.create(name=name, category=category)
 
 
-def update_subcategory(subcategory_id: int, name: str = None, category: str = None):
+def update_subcategory(
+    subcategory_id: int, name: str = None, category: Category = None
+):
     """
     Update existing subcategory.
 
     Args:
         subcategory_id: The ID of the subcategory to update.
         name (str, optional): The new name for the subcategory.
-        category (str, optional): The new category for the subcategory.
+        category (Category, optional): The new category for the subcategory.
 
     Returns:
         Subcategory: The updated subcategory object.

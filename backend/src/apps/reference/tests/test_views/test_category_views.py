@@ -30,12 +30,12 @@ class CategoryViewsTests(APITestCase):
 
         self.valid_payload = {
             'name': CategoryEnum.MARKETING.value,
-            'transaction_type': self.transaction_type.id,
+            'transaction_type_id': self.transaction_type.id,
         }
 
         self.invalid_payload = {
             'name': 'Invalid Category Name',
-            'transaction_type': self.transaction_type.id,
+            'transaction_type_id': self.transaction_type.id,
         }
 
         self.transaction_type_obj = TransactionType.objects.get(
@@ -57,7 +57,7 @@ class CategoryViewsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.category.name)
 
-        self.assertIn('transaction_type', response.data)
+        self.assertIn('transaction_type_id', response.data)
 
     def test_create_valid_category(self):
         """Test creating a new category with valid data."""
@@ -73,7 +73,7 @@ class CategoryViewsTests(APITestCase):
 
         valid_payload = {
             'name': CategoryEnum.MARKETING.value,
-            'transaction_type': self.transaction_type_obj.id,
+            'transaction_type_id': self.transaction_type_obj.id,
         }
 
         response = self.client.post(self.create_url, valid_payload, format='json')
@@ -116,7 +116,7 @@ class CategoryViewsTests(APITestCase):
 
         update_payload = {
             'name': CategoryEnum.MARKETING.value,
-            'transaction_type': self.transaction_type_obj.id,
+            'transaction_type_id': self.transaction_type_obj.id,
         }
 
         response = self.client.put(self.update_url, update_payload, format='json')
@@ -154,7 +154,7 @@ class CategoryViewsTests(APITestCase):
         original_name = self.category.name
         update_payload = {
             'name': CategoryEnum.MARKETING.value,
-            'transaction_type': self.transaction_type_obj.id,
+            'transaction_type_id': self.transaction_type_obj.id,
         }
 
         response = self.client.put(self.update_url, update_payload, format='json')
