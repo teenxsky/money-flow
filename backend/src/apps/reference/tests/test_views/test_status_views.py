@@ -12,14 +12,14 @@ class StatusViewsTests(APITestCase):
 
     def setUp(self):
         """Set up test data."""
-        self.list_url = reverse('status-list')
-        self.create_url = reverse('status-create')
+        self.list_url = reverse('status-list-create')
+        self.create_url = reverse('status-list-create')
 
         self.status_obj = StatusFactory(name=StatusEnum.BUSINESS.value)
 
         self.detail_url = reverse('status-detail', args=[self.status_obj.id])
-        self.update_url = reverse('status-update', args=[self.status_obj.id])
-        self.delete_url = reverse('status-delete', args=[self.status_obj.id])
+        self.update_url = reverse('status-detail', args=[self.status_obj.id])
+        self.delete_url = reverse('status-detail', args=[self.status_obj.id])
 
         self.valid_payload = {
             'name': StatusEnum.PERSONAL.value,

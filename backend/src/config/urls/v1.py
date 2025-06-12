@@ -7,6 +7,7 @@ __all__ = ['urlpatterns']
 apps_patterns_v1 = [
     path('', include('apps.users.urls')),
     path('', include('apps.reference.urls')),
+    path('', include('apps.transactions.urls')),
 ]
 
 third_party_patterns_v1 = [

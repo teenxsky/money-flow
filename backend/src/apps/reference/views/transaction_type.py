@@ -20,54 +20,27 @@ from apps.reference.services.transaction_type import (
 )
 
 
-class TransactionTypeListView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = TransactionTypeDetailSerializer
+class TransactionTypeListCreateView(APIView):
+    in_serializer_class = TransactionTypeSerializer
+    out_serializer_class = TransactionTypeDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'POST':
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @swagger_auto_schema(
         operation_summary='List all transaction types',
         operation_description='Returns a list of all transaction types.',
         security=[],
-        responses={200: serializer_class(many=True)},
+        responses={200: out_serializer_class(many=True)},
     )
     def get(self, request: Request):
         statuses = get_all_transaction_types()
-        serializer = self.serializer_class(statuses, many=True)
+        serializer = self.out_serializer_class(statuses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class TransactionTypeDetailView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = TransactionTypeDetailSerializer
-
-    @swagger_auto_schema(
-        operation_summary='Get transaction type details',
-        operation_description='Retrieves detailed information about a specific '
-        'transaction type by ID.',
-        security=[],
-        responses={
-            200: serializer_class,
-            404: openapi.Response(
-                description='Transaction type not found',
-            ),
-        },
-    )
-    def get(self, request: Request, id: int):
-        try:
-            status_obj = get_transaction_type_by_id(id)
-        except NotFound as error:
-            return Response(
-                {'message': 'Not found', 'errors': error.detail},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer = self.serializer_class(status_obj)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class TransactionTypeCreateView(APIView):
-    permission_classes = [IsAdminUser]
-    in_serializer_class = TransactionTypeSerializer
-    out_serializer_class = TransactionTypeDetailSerializer
 
     @swagger_auto_schema(
         operation_summary='Create a new transaction type',
@@ -100,10 +73,39 @@ class TransactionTypeCreateView(APIView):
         )
 
 
-class TransactionTypeUpdateView(APIView):
-    permission_classes = [IsAdminUser]
+class TransactionTypeDetailView(APIView):
     in_serializer_class = TransactionTypeSerializer
     out_serializer_class = TransactionTypeDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        return [AllowAny()]
+
+    @swagger_auto_schema(
+        operation_summary='Get transaction type details',
+        operation_description='Retrieves detailed information about a specific '
+        'transaction type by ID.',
+        security=[],
+        responses={
+            200: out_serializer_class,
+            404: openapi.Response(
+                description='Transaction type not found',
+            ),
+        },
+    )
+    def get(self, request: Request, id: int):
+        try:
+            status_obj = get_transaction_type_by_id(id)
+        except NotFound as error:
+            return Response(
+                {'message': 'Not found', 'errors': error.detail},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = self.out_serializer_class(status_obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Update a transaction type',
@@ -147,10 +149,6 @@ class TransactionTypeUpdateView(APIView):
             self.out_serializer_class(updated_status).data,
             status=status.HTTP_200_OK,
         )
-
-
-class TransactionTypeDeleteView(APIView):
-    permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(
         operation_summary='Delete a transaction type',

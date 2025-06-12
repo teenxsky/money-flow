@@ -1,11 +1,8 @@
 from django.urls import include, path
 
 from apps.reference.views.category import (
-    CategoryCreateView,
-    CategoryDeleteView,
     CategoryDetailView,
-    CategoryListView,
-    CategoryUpdateView,
+    CategoryListCreateView,
 )
 
 category_patterns = [
@@ -13,19 +10,8 @@ category_patterns = [
         'categories/',
         include(
             [
-                path('', CategoryListView.as_view(), name='category-list'),
-                path('create/', CategoryCreateView.as_view(), name='category-create'),
+                path('', CategoryListCreateView.as_view(), name='category-list-create'),
                 path('<int:id>/', CategoryDetailView.as_view(), name='category-detail'),
-                path(
-                    '<int:id>/update/',
-                    CategoryUpdateView.as_view(),
-                    name='category-update',
-                ),
-                path(
-                    '<int:id>/delete/',
-                    CategoryDeleteView.as_view(),
-                    name='category-delete',
-                ),
             ]
         ),
         name='category',

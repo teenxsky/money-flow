@@ -13,8 +13,8 @@ class CategoryViewsTests(APITestCase):
 
     def setUp(self):
         """Set up test data."""
-        self.list_url = reverse('category-list')
-        self.create_url = reverse('category-create')
+        self.list_url = reverse('category-list-create')
+        self.create_url = reverse('category-list-create')
 
         self.transaction_type = TransactionTypeFactory(
             name=TransactionTypeEnum.EXPENSE.value
@@ -25,8 +25,8 @@ class CategoryViewsTests(APITestCase):
         )
 
         self.detail_url = reverse('category-detail', args=[self.category.id])
-        self.update_url = reverse('category-update', args=[self.category.id])
-        self.delete_url = reverse('category-delete', args=[self.category.id])
+        self.update_url = reverse('category-detail', args=[self.category.id])
+        self.delete_url = reverse('category-detail', args=[self.category.id])
 
         self.valid_payload = {
             'name': CategoryEnum.MARKETING.value,

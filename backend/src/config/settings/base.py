@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # Project apps
     'apps.users',
     'apps.reference',
+    'apps.transactions',
     # Third-party apps
     'drf_yasg',
     'rest_framework',

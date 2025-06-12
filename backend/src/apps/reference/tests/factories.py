@@ -29,7 +29,7 @@ class TransactionTypeFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('name',)
 
     name = factory.declarations.LazyFunction(
-        lambda: fuzzy_enum_value(TransactionTypeEnum)
+        lambda: str(fuzzy_enum_value(TransactionTypeEnum))[:50]
     )
 
 
@@ -38,7 +38,9 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
         django_get_or_create = ('name',)
 
-    name = factory.declarations.LazyFunction(lambda: fuzzy_enum_value(CategoryEnum))
+    name = factory.declarations.LazyFunction(
+        lambda: str(fuzzy_enum_value(CategoryEnum))[:50]
+    )
 
     @factory.helpers.lazy_attribute
     def transaction_type(self):
@@ -55,7 +57,9 @@ class SubcategoryFactory(factory.django.DjangoModelFactory):
         model = Subcategory
         django_get_or_create = ('name', 'category')
 
-    name = factory.declarations.LazyFunction(lambda: fuzzy_enum_value(SubcategoryEnum))
+    name = factory.declarations.LazyFunction(
+        lambda: str(fuzzy_enum_value(SubcategoryEnum))[:50]
+    )
 
     @factory.helpers.lazy_attribute
     def category(self):
@@ -72,4 +76,6 @@ class StatusFactory(factory.django.DjangoModelFactory):
         model = Status
         django_get_or_create = ('name',)
 
-    name = factory.declarations.LazyFunction(lambda: fuzzy_enum_value(StatusEnum))
+    name = factory.declarations.LazyFunction(
+        lambda: str(fuzzy_enum_value(StatusEnum))[:50]
+    )

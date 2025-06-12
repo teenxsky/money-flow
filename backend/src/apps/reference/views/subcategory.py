@@ -20,55 +20,28 @@ from apps.reference.services.subcategory import (
 )
 
 
-class SubcategoryListView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = SubcategoryDetailSerializer
+class SubcategoryListCreateView(APIView):
+    in_serializer_class = SubcategorySerializer
+    out_serializer_class = SubcategoryDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'POST':
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @swagger_auto_schema(
         operation_summary='List all subcategories',
         operation_description='Returns a list of all transaction subcategories '
         'with their associated categories.',
         security=[],
-        responses={200: serializer_class(many=True)},
+        responses={200: out_serializer_class(many=True)},
     )
     def get(self, request: Request):
         subcategories = get_all_subcategories()
-        serializer = self.serializer_class(subcategories, many=True)
+        serializer = self.out_serializer_class(subcategories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class SubcategoryDetailView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = SubcategoryDetailSerializer
-
-    @swagger_auto_schema(
-        operation_summary='Get subcategory details',
-        operation_description='Retrieves detailed information about a specific '
-        'subcategory by ID.',
-        security=[],
-        responses={
-            200: serializer_class,
-            400: openapi.Response(
-                description='Validation error',
-            ),
-        },
-    )
-    def get(self, request: Request, id: int):
-        try:
-            subcategory = get_subcategory_by_id(id)
-        except ValidationError as error:
-            return Response(
-                {'message': 'Validation error', 'error': error.message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        serializer = self.serializer_class(subcategory)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class SubcategoryCreateView(APIView):
-    permission_classes = [IsAdminUser]
-    in_serializer_class = SubcategorySerializer
-    out_serializer_class = SubcategoryDetailSerializer
 
     @swagger_auto_schema(
         operation_summary='Create a new subcategory',
@@ -111,10 +84,39 @@ class SubcategoryCreateView(APIView):
         )
 
 
-class SubcategoryUpdateView(APIView):
-    permission_classes = [IsAdminUser]
+class SubcategoryDetailView(APIView):
     in_serializer_class = SubcategorySerializer
     out_serializer_class = SubcategoryDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        return [AllowAny()]
+
+    @swagger_auto_schema(
+        operation_summary='Get subcategory details',
+        operation_description='Retrieves detailed information about a specific '
+        'subcategory by ID.',
+        security=[],
+        responses={
+            200: out_serializer_class,
+            400: openapi.Response(
+                description='Validation error',
+            ),
+        },
+    )
+    def get(self, request: Request, id: int):
+        try:
+            subcategory = get_subcategory_by_id(id)
+        except ValidationError as error:
+            return Response(
+                {'message': 'Validation error', 'error': error.message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = self.out_serializer_class(subcategory)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Update a subcategory',
@@ -156,10 +158,6 @@ class SubcategoryUpdateView(APIView):
             self.out_serializer_class(updated_subcategory).data,
             status=status.HTTP_200_OK,
         )
-
-
-class SubcategoryDeleteView(APIView):
-    permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(
         operation_summary='Delete a subcategory',

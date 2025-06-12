@@ -20,55 +20,28 @@ from apps.reference.services.category import (
 )
 
 
-class CategoryListView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = CategorySerializer
+class CategoryListCreateView(APIView):
+    in_serializer_class = CategorySerializer
+    out_serializer_class = CategoryDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'POST':
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @swagger_auto_schema(
         operation_summary='List all categories',
         operation_description='Returns a list of all transaction categories with '
         'their associated transaction types.',
         security=[],
-        responses={200: serializer_class(many=True)},
+        responses={200: out_serializer_class(many=True)},
     )
     def get(self, request: Request):
         categories = get_all_categories()
-        serializer = self.serializer_class(categories, many=True)
+        serializer = self.out_serializer_class(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CategoryDetailView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = CategoryDetailSerializer
-
-    @swagger_auto_schema(
-        operation_summary='Get category details',
-        operation_description='Retrieves detailed information about '
-        'a specific category by ID.',
-        security=[],
-        responses={
-            200: serializer_class,
-            404: openapi.Response(description='Category not found'),
-        },
-    )
-    def get(self, request: Request, id: int):
-        try:
-            category = get_category_by_id(id)
-        except NotFound as error:
-            return Response(
-                {'message': 'Not found', 'error': error.detail},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        serializer = self.serializer_class(category)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CategoryCreateView(APIView):
-    permission_classes = [IsAdminUser]
-
-    in_serializer_class = CategorySerializer
-    out_serializer_class = CategoryDetailSerializer
 
     @swagger_auto_schema(
         operation_summary='Create a new category',
@@ -109,11 +82,38 @@ class CategoryCreateView(APIView):
         )
 
 
-class CategoryUpdateView(APIView):
-    permission_classes = [IsAdminUser]
-
+class CategoryDetailView(APIView):
     in_serializer_class = CategorySerializer
     out_serializer_class = CategoryDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        return [AllowAny()]
+
+    @swagger_auto_schema(
+        operation_summary='Get category details',
+        operation_description='Retrieves detailed information about '
+        'a specific category by ID.',
+        security=[],
+        responses={
+            200: out_serializer_class,
+            404: openapi.Response(description='Category not found'),
+        },
+    )
+    def get(self, request: Request, id: int):
+        try:
+            category = get_category_by_id(id)
+        except NotFound as error:
+            return Response(
+                {'message': 'Not found', 'error': error.detail},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serializer = self.out_serializer_class(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Update a category',
@@ -161,10 +161,6 @@ class CategoryUpdateView(APIView):
             self.out_serializer_class(updated_category).data,
             status=status.HTTP_200_OK,
         )
-
-
-class CategoryDeleteView(APIView):
-    permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(
         operation_summary='Delete a category',

@@ -20,54 +20,27 @@ from apps.reference.services.status import (
 )
 
 
-class StatusListView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = StatusDetailSerializer
+class StatusListCreateView(APIView):
+    in_serializer_class = StatusSerializer
+    out_serializer_class = StatusDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'POST':
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @swagger_auto_schema(
         operation_summary='List all statuses',
         operation_description='Returns a list of all transaction statuses.',
         security=[],
-        responses={200: serializer_class(many=True)},
+        responses={200: out_serializer_class(many=True)},
     )
     def get(self, request: Request):
         statuses = get_all_statuses()
-        serializer = self.serializer_class(statuses, many=True)
+        serializer = self.out_serializer_class(statuses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class StatusDetailView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = StatusDetailSerializer
-
-    @swagger_auto_schema(
-        operation_summary='Get status details',
-        operation_description='Retrieves detailed information about '
-        'a specific status by ID.',
-        security=[],
-        responses={
-            200: serializer_class,
-            404: openapi.Response(
-                description='Status not found',
-            ),
-        },
-    )
-    def get(self, request: Request, id: int):
-        try:
-            status_obj = get_status_by_id(id)
-        except NotFound as error:
-            return Response(
-                {'message': 'Not found', 'errors': error.detail},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer = self.serializer_class(status_obj)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class StatusCreateView(APIView):
-    permission_classes = [IsAdminUser]
-    in_serializer_class = StatusSerializer
-    out_serializer_class = StatusDetailSerializer
 
     @swagger_auto_schema(
         operation_summary='Create a new status',
@@ -79,18 +52,6 @@ class StatusCreateView(APIView):
             201: out_serializer_class,
             400: openapi.Response(
                 description='Validation error',
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'message': openapi.Schema(
-                            type=openapi.TYPE_STRING, example='Validation failed'
-                        ),
-                        'errors': openapi.Schema(
-                            type=openapi.TYPE_OBJECT,
-                            example={'name': ['This field is required.']},
-                        ),
-                    },
-                ),
             ),
             401: openapi.Response(
                 description='Authentication credentials not provided'
@@ -112,10 +73,39 @@ class StatusCreateView(APIView):
         )
 
 
-class StatusUpdateView(APIView):
-    permission_classes = [IsAdminUser]
+class StatusDetailView(APIView):
     in_serializer_class = StatusSerializer
     out_serializer_class = StatusDetailSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        return [AllowAny()]
+
+    @swagger_auto_schema(
+        operation_summary='Get status details',
+        operation_description='Retrieves detailed information about '
+        'a specific status by ID.',
+        security=[],
+        responses={
+            200: in_serializer_class,
+            404: openapi.Response(
+                description='Status not found',
+            ),
+        },
+    )
+    def get(self, request: Request, id: int):
+        try:
+            status_obj = get_status_by_id(id)
+        except NotFound as error:
+            return Response(
+                {'message': 'Not found', 'errors': error.detail},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = self.in_serializer_class(status_obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Update a status',
@@ -159,10 +149,6 @@ class StatusUpdateView(APIView):
             self.out_serializer_class(updated_status).data,
             status=status.HTTP_200_OK,
         )
-
-
-class StatusDeleteView(APIView):
-    permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(
         operation_summary='Delete a status',

@@ -12,8 +12,8 @@ class TransactionTypeViewsTests(APITestCase):
 
     def setUp(self):
         """Set up test data."""
-        self.list_url = reverse('transaction-type-list')
-        self.create_url = reverse('transaction-type-create')
+        self.list_url = reverse('transaction-type-list-create')
+        self.create_url = reverse('transaction-type-list-create')
 
         self.transaction_type = TransactionTypeFactory(
             name=TransactionTypeEnum.INCOME.value
@@ -23,10 +23,10 @@ class TransactionTypeViewsTests(APITestCase):
             'transaction-type-detail', args=[self.transaction_type.id]
         )
         self.update_url = reverse(
-            'transaction-type-update', args=[self.transaction_type.id]
+            'transaction-type-detail', args=[self.transaction_type.id]
         )
         self.delete_url = reverse(
-            'transaction-type-delete', args=[self.transaction_type.id]
+            'transaction-type-detail', args=[self.transaction_type.id]
         )
 
         self.valid_payload = {

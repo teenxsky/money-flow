@@ -18,8 +18,8 @@ class SubcategoryViewsTests(APITestCase):
 
     def setUp(self):
         """Set up test data."""
-        self.list_url = reverse('subcategory-list')
-        self.create_url = reverse('subcategory-create')
+        self.list_url = reverse('subcategory-list-create')
+        self.create_url = reverse('subcategory-list-create')
 
         self.transaction_type = TransactionTypeFactory(
             name=TransactionTypeEnum.EXPENSE.value
@@ -33,8 +33,8 @@ class SubcategoryViewsTests(APITestCase):
         )
 
         self.detail_url = reverse('subcategory-detail', args=[self.subcategory.id])
-        self.update_url = reverse('subcategory-update', args=[self.subcategory.id])
-        self.delete_url = reverse('subcategory-delete', args=[self.subcategory.id])
+        self.update_url = reverse('subcategory-detail', args=[self.subcategory.id])
+        self.delete_url = reverse('subcategory-detail', args=[self.subcategory.id])
 
         self.valid_payload = {
             'name': SubcategoryEnum.PROXY.value,
