@@ -38,6 +38,6 @@ COPY $LOCAL_BACKEND_PATH/poetry.lock \
 RUN python -m pip install --no-cache-dir poetry==$POETRY_VERSION \
     && poetry self add poetry-plugin-shell
 
-COPY $LOCAL_DEPLOYMENT_PATH/script/backend.sh /usr/local/
-RUN chmod +x /usr/local/backend.sh
-ENTRYPOINT ["sh", "/usr/local/backend.sh"]
+COPY $LOCAL_DEPLOYMENT_PATH/script/backend.sh /backend/backend.sh
+RUN chmod +x /backend/backend.sh
+ENTRYPOINT ["/backend/backend.sh"]

@@ -38,7 +38,8 @@ services:
     expose:
       - ${BACKEND_PORT}
     volumes:
-      - ./../../backend:/backend
+      - ./../../backend/src:/backend/src
+      - ./../../backend/.venv:/backend/.venv
     environment:
       - TZ=${TZ}
       - DOMAIN_HOST=${DOMAIN_HOST}
