@@ -72,9 +72,6 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Project specific
-*.env*
-
 # Coverage
 .coverage
 htmlcov/

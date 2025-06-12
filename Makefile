@@ -1,4 +1,4 @@
-COMPOSE_DEV = docker-compose -f ./deployments/dev/docker-compose.yaml \
+COMPOSE_DEV = docker compose -f ./deployments/dev/docker-compose.yaml \
 			--env-file=./deployments/dev/conf/.env.docker.local
 
 
