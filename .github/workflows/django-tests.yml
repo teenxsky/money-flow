@@ -1,0 +1,37 @@
+name: Django Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{  secrets.DOCKERHUB_USERNAME  }}
+          password: ${{  secrets.DOCKERHUB_TOKEN  }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Copy .env files
+        run: |
+          cp ./deployments/dev/conf/.env.docker ./deployments/dev/conf/.env.docker.local
+          cp ./deployments/dev/conf/.env.backend ./deployments/dev/conf/.env.backend.local
+
+      - name: Build
+        run: make build-dev
+
+      - name: Up
+        run: make up-dev
+
+      - name: Test
+        run: make run-tests-dev

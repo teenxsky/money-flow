@@ -4,7 +4,6 @@ Database settings for money-flow project.
 
 import os
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

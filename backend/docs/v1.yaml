@@ -1,0 +1,1166 @@
+swagger: "2.0"
+info:
+  title: Money Flow API
+  description: Documentation API
+  termsOfService: https://www.google.com/policies/terms/
+  license:
+    name: Apache License
+  version: v1
+host: api.localhost
+schemes:
+  - http
+basePath: /v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - Bearer: []
+paths:
+  /categories/:
+    get:
+      operationId: categories_list
+      summary: List all categories
+      description:
+        Returns a list of all transaction categories with their associated
+        transaction types.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CategoryDetail"
+      tags:
+        - categories
+      security: []
+    post:
+      operationId: categories_create
+      summary: Create a new category
+      description:
+        Creates a new transaction category with the specified name and
+        transaction type. Requires admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Category"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    parameters: []
+  /categories/{id}/:
+    get:
+      operationId: categories_read
+      summary: Get category details
+      description: Retrieves detailed information about a specific category by ID.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security: []
+    put:
+      operationId: categories_update
+      summary: Update a category
+      description:
+        Updates an existing category with new information. Requires admin
+        privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Category"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/CategoryDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    delete:
+      operationId: categories_delete
+      summary: Delete a category
+      description: Deletes a category by ID. Requires admin privileges.
+      parameters: []
+      responses:
+        "204":
+          description: Category deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Category not found
+      tags:
+        - categories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /statuses/:
+    get:
+      operationId: statuses_list
+      summary: List all statuses
+      description: Returns a list of all transaction statuses.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/StatusDetail"
+      tags:
+        - statuses
+      security: []
+    post:
+      operationId: statuses_create
+      summary: Create a new status
+      description:
+        Creates a new transaction status with the specified name. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Status"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/StatusDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    parameters: []
+  /statuses/{id}/:
+    get:
+      operationId: statuses_read
+      summary: Get status details
+      description: Retrieves detailed information about a specific status by ID.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/Status"
+        "404":
+          description: Status not found
+      tags:
+        - statuses
+      security: []
+    put:
+      operationId: statuses_update
+      summary: Update a status
+      description:
+        Updates an existing status with new information. Requires admin
+        privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Status"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/StatusDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Status not found
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    delete:
+      operationId: statuses_delete
+      summary: Delete a status
+      description: Deletes a status by ID. Requires admin privileges.
+      parameters: []
+      responses:
+        "204":
+          description: Status deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Status not found
+      tags:
+        - statuses
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /subcategories/:
+    get:
+      operationId: subcategories_list
+      summary: List all subcategories
+      description:
+        Returns a list of all transaction subcategories with their associated
+        categories.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SubcategoryDetail"
+      tags:
+        - subcategories
+      security: []
+    post:
+      operationId: subcategories_create
+      summary: Create a new subcategory
+      description:
+        Creates a new transaction subcategory with the specified name and
+        category. Requires admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Subcategory"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/SubcategoryDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    parameters: []
+  /subcategories/{id}/:
+    get:
+      operationId: subcategories_read
+      summary: Get subcategory details
+      description:
+        Retrieves detailed information about a specific subcategory by
+        ID.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/SubcategoryDetail"
+        "400":
+          description: Validation error
+      tags:
+        - subcategories
+      security: []
+    put:
+      operationId: subcategories_update
+      summary: Update a subcategory
+      description:
+        Updates an existing subcategory with new information. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Subcategory"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/SubcategoryDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    delete:
+      operationId: subcategories_delete
+      summary: Delete a subcategory
+      description: Deletes a subcategory by ID. Requires admin privileges.
+      parameters: []
+      responses:
+        "204":
+          description: Subcategory deleted successfully
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - subcategories
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /transaction-types/:
+    get:
+      operationId: transaction-types_list
+      summary: List all transaction types
+      description: Returns a list of all transaction types.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TransactionTypeDetail"
+      tags:
+        - transaction-types
+      security: []
+    post:
+      operationId: transaction-types_create
+      summary: Create a new transaction type
+      description:
+        Creates a new transaction type with the specified name. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionType"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionTypeDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+      tags:
+        - transaction-types
+      security:
+        - Bearer: []
+    parameters: []
+  /transaction-types/{id}/:
+    get:
+      operationId: transaction-types_read
+      summary: Get transaction type details
+      description:
+        Retrieves detailed information about a specific transaction type
+        by ID.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionTypeDetail"
+        "404":
+          description: Transaction type not found
+      tags:
+        - transaction-types
+      security: []
+    put:
+      operationId: transaction-types_update
+      summary: Update a transaction type
+      description:
+        Updates an existing transaction type with new information. Requires
+        admin privileges.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionType"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionTypeDetail"
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Transaction type not found
+      tags:
+        - transaction-types
+      security:
+        - Bearer: []
+    delete:
+      operationId: transaction-types_delete
+      summary: Delete a transaction type
+      description: Deletes a transaction type by ID. Requires admin privileges.
+      parameters: []
+      responses:
+        "204":
+          description: Transaction type deleted successfully
+        "401":
+          description: Authentication credentials not provided
+        "404":
+          description: Transaction type not found
+      tags:
+        - transaction-types
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /transactions/:
+    get:
+      operationId: transactions_list
+      summary: List user transactions
+      description: Returns a list of all transactions for the authenticated user.
+      parameters:
+        - name: created_at__gte
+          in: query
+          description: Filter by created date greater than or equal to
+          type: string
+          format: date
+        - name: created_at__lte
+          in: query
+          description: Filter by created date less than or equal to
+          type: string
+          format: date
+        - name: status
+          in: query
+          description: Filter by status ID
+          type: integer
+        - name: transaction_type
+          in: query
+          description: Filter by transaction type ID
+          type: integer
+        - name: category
+          in: query
+          description: Filter by category ID
+          type: integer
+        - name: subcategory
+          in: query
+          description: Filter by subcategory ID
+          type: integer
+        - name: amount__gte
+          in: query
+          description: Filter by amount greater than or equal to
+          type: number
+        - name: amount__lte
+          in: query
+          description: Filter by amount less than or equal to
+          type: number
+        - name: ordering
+          in: query
+          description: Order results by field (prefix with - for descending)
+          type: string
+          enum:
+            - created_at
+            - -created_at
+            - amount
+            - -amount
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TransactionList"
+        "401":
+          description: Authentication credentials were not provided.
+      tags:
+        - transactions
+      security:
+        - Bearer: []
+    post:
+      operationId: transactions_create
+      summary: Create a transaction
+      description: Creates a new transaction for the authenticated user.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionCreate"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionDetail"
+        "400":
+          description: Invalid data provided
+        "401":
+          description: Authentication credentials were not provided.
+      tags:
+        - transactions
+      security:
+        - Bearer: []
+    parameters: []
+  /transactions/{id}/:
+    get:
+      operationId: transactions_read
+      summary: Get transaction details
+      description: Returns detailed information about a specific transaction.
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionDetail"
+        "401":
+          description: Authentication credentials were not provided.
+        "403":
+          description: You don't have permission to access this transaction.
+        "404":
+          description: Transaction not found.
+      tags:
+        - transactions
+      security:
+        - Bearer: []
+    patch:
+      operationId: transactions_partial_update
+      summary: Update a transaction
+      description: Updates an existing transaction with new information.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionUpdate"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/TransactionDetail"
+        "400":
+          description: Invalid data provided
+        "401":
+          description: Authentication credentials were not provided.
+        "403":
+          description: You don't have permission to modify this transaction.
+        "404":
+          description: Transaction not found.
+      tags:
+        - transactions
+      security:
+        - Bearer: []
+    delete:
+      operationId: transactions_delete
+      summary: Delete a transaction
+      description: Deletes a specific transaction.
+      parameters: []
+      responses:
+        "204":
+          description: Transaction deleted successfully
+        "401":
+          description: Authentication credentials were not provided.
+        "403":
+          description: You don't have permission to delete this transaction.
+        "404":
+          description: Transaction not found.
+      tags:
+        - transactions
+      security:
+        - Bearer: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /users/login/:
+    post:
+      operationId: users_login_create
+      summary: Log in a user
+      description:
+        Authenticates a user with email and password, returns access and
+        refresh tokens
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - email
+              - password
+            type: object
+            properties:
+              email:
+                type: string
+                example: user@example.com
+              password:
+                type: string
+                example: SecurePassword123
+      responses:
+        "200":
+          description: User logged in successfully with tokens
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User logged in successfully!
+              access:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGci...
+              refresh:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGci...
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              error:
+                type: object
+                example:
+                  email:
+                    - This field is required.
+        "401":
+          description: Authentication failed
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Authentication failed
+              error:
+                type: string
+                example: Invalid credentials
+      tags:
+        - users
+      security: []
+    parameters: []
+  /users/logout/:
+    post:
+      operationId: users_logout_create
+      summary: Log out a user
+      description: Blacklists the user's refresh token, effectively logging them out
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - refresh
+            type: object
+            properties:
+              refresh:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+      responses:
+        "200":
+          description: User logged out successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User logged out successfully!
+        "400":
+          description: Invalid token or validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Authentication failed
+              error:
+                type: string
+                example: Token is invalid or expired
+      tags:
+        - users
+      security: []
+    parameters: []
+  /users/me/:
+    get:
+      operationId: users_me_list
+      summary: Get user details
+      description: Retrieves details of the currently authenticated user
+      parameters: []
+      responses:
+        "200":
+          description: User details retrieved successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              email:
+                type: string
+                example: user@example.com
+              first_name:
+                type: string
+                example: John
+              last_name:
+                type: string
+                example: Doe
+        "401":
+          description: Authentication credentials were not provided
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: Authentication credentials were not provided.
+      tags:
+        - users
+      security:
+        - Bearer: []
+    parameters: []
+  /users/refresh/:
+    post:
+      operationId: users_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TokenRefresh"
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: "#/definitions/TokenRefresh"
+      tags:
+        - users
+    parameters: []
+  /users/register/:
+    post:
+      operationId: users_register_create
+      summary: Register a new user
+      description:
+        Creates a new user account with email, password, and optional name
+        details
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - email
+              - password
+            type: object
+            properties:
+              email:
+                type: string
+                example: user@example.com
+              password:
+                type: string
+                example: SecurePassword123
+              first_name:
+                type: string
+                example: John
+              last_name:
+                type: string
+                example: Doe
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User created!
+        "400":
+          description: Validation error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Validation failed
+              error:
+                type: object
+                example:
+                  email:
+                    - This field is required.
+      tags:
+        - users
+      security: []
+    parameters: []
+definitions:
+  CategoryDetail:
+    required:
+      - transaction_type_id
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      transaction_type_id:
+        title: Transaction type id
+        type: integer
+  Category:
+    required:
+      - name
+      - transaction_type_id
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      transaction_type_id:
+        title: Transaction type id
+        type: integer
+  StatusDetail:
+    required:
+      - id
+      - name
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  Status:
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  SubcategoryDetail:
+    required:
+      - id
+      - name
+      - category_id
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      category_id:
+        title: Category id
+        type: integer
+  Subcategory:
+    required:
+      - name
+      - category_id
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 50
+        minLength: 1
+      category_id:
+        title: Category id
+        type: integer
+  TransactionTypeDetail:
+    required:
+      - id
+      - name
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  TransactionType:
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+  TransactionList:
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+      status_id:
+        title: Status id
+        type: string
+        readOnly: true
+      status_name:
+        title: Status name
+        type: string
+        readOnly: true
+        minLength: 1
+      transaction_type_id:
+        title: Transaction type id
+        type: string
+        readOnly: true
+      transaction_type_name:
+        title: Transaction type name
+        type: string
+        readOnly: true
+        minLength: 1
+      category_id:
+        title: Category id
+        type: string
+        readOnly: true
+      category_name:
+        title: Category name
+        type: string
+        readOnly: true
+        minLength: 1
+      subcategory_id:
+        title: Subcategory id
+        type: string
+        readOnly: true
+      subcategory_name:
+        title: Subcategory name
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      amount:
+        title: Amount
+        type: string
+        format: decimal
+        readOnly: true
+  TransactionCreate:
+    required:
+      - status_id
+      - transaction_type_id
+      - category_id
+      - amount
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+      status_id:
+        title: Status id
+        type: integer
+      transaction_type_id:
+        title: Transaction type id
+        type: integer
+      category_id:
+        title: Category id
+        type: integer
+      subcategory_id:
+        title: Subcategory id
+        type: integer
+        x-nullable: true
+      amount:
+        title: Amount
+        type: string
+        format: decimal
+      comment:
+        title: Comment
+        type: string
+        maxLength: 50
+  TransactionDetail:
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      user_email:
+        title: User email
+        type: string
+        readOnly: true
+        minLength: 1
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+      status_id:
+        title: Status id
+        type: string
+        readOnly: true
+      status_name:
+        title: Status name
+        type: string
+        readOnly: true
+        minLength: 1
+      transaction_type_id:
+        title: Transaction type id
+        type: string
+        readOnly: true
+      transaction_type_name:
+        title: Transaction type name
+        type: string
+        readOnly: true
+        minLength: 1
+      category_id:
+        title: Category id
+        type: string
+        readOnly: true
+      category_name:
+        title: Category name
+        type: string
+        readOnly: true
+        minLength: 1
+      subcategory_id:
+        title: Subcategory id
+        type: string
+        readOnly: true
+      subcategory_name:
+        title: Subcategory name
+        type: string
+        readOnly: true
+        minLength: 1
+        x-nullable: true
+      amount:
+        title: Amount
+        type: string
+        format: decimal
+        readOnly: true
+      comment:
+        title: Comment
+        type: string
+        readOnly: true
+        minLength: 1
+  TransactionUpdate:
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+        readOnly: true
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      status_id:
+        title: Status id
+        type: integer
+      transaction_type_id:
+        title: Transaction type id
+        type: integer
+      category_id:
+        title: Category id
+        type: integer
+      subcategory_id:
+        title: Subcategory id
+        type: integer
+        x-nullable: true
+      amount:
+        title: Amount
+        type: string
+        format: decimal
+      comment:
+        title: Comment
+        type: string
+        maxLength: 50
+  TokenRefresh:
+    required:
+      - refresh
+    type: object
+    properties:
+      refresh:
+        title: Refresh
+        type: string
+        minLength: 1
+      access:
+        title: Access
+        type: string
+        readOnly: true
+        minLength: 1
