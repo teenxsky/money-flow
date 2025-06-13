@@ -1,12 +1,48 @@
 COMPOSE_DEV = docker compose -f ./deployments/dev/docker-compose.yaml \
 			--env-file=./deployments/dev/conf/.env.docker.local
 
+COMPOSE_PROD = docker compose -f ./deployments/prod/docker-compose.yaml \
+			--env-file=./deployments/prod/conf/.env.docker.local
+
 
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' \
 	$(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+#--------------- PRODUCTION COMMANDS ---------------#
+
+.PHONY: build
+build: ## Build the Docker images for the production environment
+	@$(COMPOSE_PROD) build
+
+.PHONY: up
+up: ## Start the production environment
+	@$(COMPOSE_PROD) up -d
+
+.PHONY: up-logs
+up-logs: ## Start the production environment and display logs
+	@$(COMPOSE_PROD) up
+
+.PHONY: clean
+clean: ## Clean up the production environment
+	@$(COMPOSE_PROD) down --rmi all
+
+.PHONY: clean-volumes
+clean-volumes: ## Clean up the production environment volumes
+	@$(COMPOSE_PROD) down -v
+
+.PHONY: run-django-tests
+run-django-tests: ## Run tests for the development environment
+	@$(COMPOSE_PROD) exec backend sh -c \
+	"poetry run python manage.py test apps"
+
+
+#------------------------------------------------------------#
+
+
+
+#--------------- DEVELOPMENT COMMANDS ---------------#
 
 #--------------- DOCKER COMPOSE COMMANDS ---------------#
 
@@ -104,8 +140,8 @@ run-tests-app-dev: ## Run tests for the development environment
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py test apps.$$app_name.tests"'
 
-.PHONY: load_reference-data-dev
-load_reference-data-dev: ## Load reference data for the development environment
+.PHONY: load-reference-data-dev
+load-reference-data-dev: ## Load reference data for the development environment
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py load_reference"
 

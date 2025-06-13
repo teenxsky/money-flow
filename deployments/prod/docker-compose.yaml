@@ -1,17 +1,21 @@
-name: money-flow-dev
+name: money-flow
 
 services:
   nginx:
     container_name: nginx
     build:
       context: ../../
-      dockerfile: ./deployments/dev/images/nginx.Dockerfile
+      dockerfile: ./deployments/prod/images/nginx.Dockerfile
     command: ["nginx", "-g", "daemon off;"]
     hostname: ${DOCKER_NGINX_HOST}
     ports:
       - ${NGINX_PORT}:${NGINX_PORT}
+    volumes:
+      - static_files:/backend/staticfiles/
     environment:
+      - TZ=${TZ}
       - NGINX_PORT=${NGINX_PORT}
+
       - DOCKER_NGINX_HOST=${DOCKER_NGINX_HOST}
       - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
       - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
@@ -31,15 +35,12 @@ services:
     container_name: frontend
     build:
       context: ../../
-      dockerfile: ./deployments/dev/images/frontend.Dockerfile
-    command: ["bun", "run", "dev", "--port", "${DOCKER_FRONTEND_PORT}"]
+      dockerfile: ./deployments/prod/images/frontend.Dockerfile
+    command: ["node", "/nuxt/server/index.mjs"]
     hostname: ${DOCKER_FRONTEND_HOST}
     expose:
       - ${DOCKER_FRONTEND_PORT}
-    volumes:
-      - ./../../frontend:/frontend
     environment:
-      - NODE_MODE=development
       - HOST=${DOCKER_FRONTEND_HOST}
       - PORT=${DOCKER_FRONTEND_PORT}
     restart: unless-stopped
@@ -51,21 +52,28 @@ services:
     container_name: backend
     build:
       context: ../../
-      dockerfile: ./deployments/dev/images/backend.Dockerfile
+      dockerfile: ./deployments/prod/images/backend.Dockerfile
     command:
       [
         "poetry",
         "run",
-        "python",
-        "src/manage.py",
-        "runserver",
+        "gunicorn",
+        "config.wsgi",
+        "--preload",
+        "--max-requests",
+        "3000",
+        "--max-requests-jitter",
+        "1500",
+        "--bind",
         "0.0.0.0:${DOCKER_BACKEND_PORT}",
+        "--pid",
+        "gunicorn.pid",
       ]
     hostname: ${DOCKER_BACKEND_HOST}
     expose:
       - ${DOCKER_BACKEND_PORT}
     volumes:
-      - ./../../backend:/backend
+      - static_files:/backend/staticfiles/
     environment:
       - NGINX_PORT=${NGINX_PORT}
       - BACKEND_BASE=${BACKEND_BASE}
@@ -91,11 +99,11 @@ services:
     container_name: postgres
     build:
       context: ../../
-      dockerfile: ./deployments/dev/images/postgres.Dockerfile
+      dockerfile: ./deployments/prod/images/postgres.Dockerfile
     command: ["postgres", "-c", "port=${DOCKER_POSTGRES_PORT}"]
     hostname: ${DOCKER_POSTGRES_HOST}
-    ports:
-      - ${DOCKER_POSTGRES_PORT}:${DOCKER_POSTGRES_PORT}
+    expose:
+      - ${DOCKER_POSTGRES_PORT}
     volumes:
       - pg-data:/var/lib/postgresql/data/
     environment:
@@ -127,3 +135,4 @@ services:
 
 volumes:
   pg-data:
+  static_files:

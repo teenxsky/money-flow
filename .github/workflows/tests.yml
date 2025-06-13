@@ -1,0 +1,31 @@
+name: TESTS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Copy .env files
+        run: |
+          cp ./deployments/prod/conf/.env.docker ./deployments/prod/conf/.env.docker.local
+          cp ./deployments/prod/conf/.env.backend ./deployments/prod/conf/.env.backend.local
+
+      - name: Build
+        run: make build
+
+      - name: Up
+        run: make up
+
+      - name: Test
+        run: make run-django-tests
