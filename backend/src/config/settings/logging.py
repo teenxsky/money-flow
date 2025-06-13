@@ -4,6 +4,9 @@ Logging settings for money-flow project.
 
 import os
 
+USE_TZ = True
+TIME_ZONE = os.getenv('TZ')
+
 if bool(int(os.getenv('DJANGO_LOGGING', 0))):
     LOGGING = {
         'version': 1,
