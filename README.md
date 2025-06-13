@@ -4,9 +4,9 @@
 [![Made with Django](https://img.shields.io/badge/Django-5.x-success?logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![Nuxt.js](https://img.shields.io/badge/Nuxt.js-3.x-green?logo=nuxt.js&logoColor=white)](https://nuxt.com/)
 [![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker&logoColor=white)](https://www.docker.com/)
-[![License](https://img.shields.io/github/license/teenxsky/money-flow?color=blue)](LICENSE)
 [![pre-commit enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/license-Apache-green)](LICENSE)
 
 Money Flow is a financial management application that helps you track income, expenses, and manage your personal or business finances. It consists of a Django backend API, a web frontend, and is containerized with Docker for easy deployment.
 
@@ -101,7 +101,7 @@ The application will be available at:
 - Backend docs (Swagger UI): http://api.localhost:80/v1/docs/
 - Backend admin panel: http://api.localhost:80/admin
 
-You can also read the bakend documentation in the form of OpenAPI specification: [v1.yaml](backend/docs/v1.yaml).
+You can also read the backend documentation in form of OpenAPI specification: [v1.yaml](backend/docs/v1.yaml).
 
 ---
 
