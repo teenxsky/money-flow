@@ -33,7 +33,7 @@ clean-volumes: ## Clean up the production environment volumes
 	@$(COMPOSE_PROD) down -v
 
 .PHONY: run-django-tests
-run-django-tests: ## Run tests for the development environment
+run-django-tests: ## Run tests for the production environment
 	@$(COMPOSE_PROD) exec backend sh -c \
 	"poetry run python manage.py test apps"
 
@@ -75,35 +75,28 @@ restart-dev: ## Restart the development environment
 	@$(COMPOSE_DEV) restart
 
 
-#--------------- DJANGO COMMANDS ---------------#
+#--------------- BACKEND COMMANDS ---------------#
 
-.PHONY: add-dependency
-add-dependency: ## Add dependency to stage environment
+.PHONY: add-back-dep
+add-back-dep: ## Add backend dependency to stage environment
 	@sh -c 'read -p "Enter the dependency name: " dep_name && \
 	echo "Installing dependency: $$dep_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry add $$dep_name"'
 
-.PHONY: add-dependency-dev
-add-dependency-dev: ## Add dependency to the development environment
+.PHONY: add-back-dep-dev
+add-back-dep-dev: ## Add backend dependency to the development environment
 	@sh -c 'read -p "Enter the dependency name for development: " dep_name && \
 	echo "Installing dependency: $$dep_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry add $$dep_name --dev"'
 
-.PHONY: remove-dependency
-remove-dependency: ## Remove dependency from stage environment
+.PHONY: remove-back-dep
+remove-back-dep: ## Remove backend dependency from stage environment
 	@sh -c 'read -p "Enter the dependency name: " dep_name && \
 	echo "Removing dependency: $$dep_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry remove $$dep_name"'
-
-.PHONY: remove-dependency-dev
-remove-dependency-dev: ## Remove dependency from the development environment
-	@sh -c 'read -p "Enter the dependency name for development: " dep_name && \
-	echo "Removing dependency: $$dep_name" && \
-	$(COMPOSE_DEV) exec backend sh -c \
-	"cd src && poetry remove $$dep_name --dev"'
 
 .PHONY: migrate-dev
 migrate-dev: ## Run Django migrations for the development environment
@@ -146,25 +139,49 @@ load-reference-data-dev: ## Load reference data for the development environment
 	"cd src && poetry run python manage.py load_reference"
 
 
+#--------------- FRONTEND COMMANDS ---------------#
+
+.PHONY: add-front-dep
+add-front-dep: ## Add backend dependency to stage environment
+	@sh -c 'read -p "Enter the dependency name: " dep_name && \
+	echo "Installing dependency: $$dep_name" && \
+	$(COMPOSE_DEV) exec frontend sh -c \
+	"bun add $$dep_name"'
+
+.PHONY: add-front-dep-dev
+add-front-dep-dev: ## Add backend dependency to the development environment
+	@sh -c 'read -p "Enter the dependency name for development: " dep_name && \
+	echo "Installing dependency: $$dep_name" && \
+	$(COMPOSE_DEV) exec backend sh -c \
+	"bun add -d $$dep_name"'
+
+.PHONY: remove-front-dep
+remove-front-dep: ## Remove backend dependency from stage environment
+	@sh -c 'read -p "Enter the dependency name: " dep_name && \
+	echo "Removing dependency: $$dep_name" && \
+	$(COMPOSE_DEV) exec backend sh -c \
+	"bun remove $$dep_name"'
+
+
 #--------------- LINT/FORMAT COMMANDS ---------------#
 
 
-.PHONY: run-backend-lint
-run-backend-lint: ## Run linting for backend code
+.PHONY: run-back-lint
+run-back-lint: ## Run linting for backend code
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"poetry run ruff check --config=ruff.toml"
 
-.PHONY: run-backend-formatter
-run-backend-formatter: ## Format backend code
+.PHONY: run-back-format
+run-back-formatter: ## Format backend code
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"poetry run ruff format --config=ruff.toml"
 
-.PHONY: run-frontend-lint
-run-frontend-lint: ## Run linting for frontend code
+.PHONY: run-front-lint
+run-front-lint: ## Run linting for frontend code
 	@$(COMPOSE_DEV) exec frontend sh -c \
 	"bun run lint"
 
-.PHONY: run-frontend-formatter
-run-frontend-formatter: ## Format frontend code
+.PHONY: run-front-format
+run-front-formatter: ## Format frontend code
 	@$(COMPOSE_DEV) exec frontend sh -c \
 	"bun run format"
