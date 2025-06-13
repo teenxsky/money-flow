@@ -1,0 +1,29 @@
+{
+  "name": "money-flow-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "HOST=0.0.0.0 nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.22",
+    "@heroicons/vue": "^2.1.5",
+    "@nuxtjs/color-mode": "^3.5.1",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.4",
+    "@vueuse/nuxt": "^11.0.3",
+    "nuxt": "^3.13.0",
+    "pinia": "^2.2.2",
+    "vue-toastification": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3"
+  }
+}

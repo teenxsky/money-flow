@@ -22,8 +22,8 @@ class TransactionCreateSerializer(serializers.Serializer):
     def validate(self, attrs):
         status = attrs.pop('status_id')
         category = attrs.pop('category_id')
-        subcategory = attrs.pop('subcategory_id')
         transaction_type = attrs.pop('transaction_type_id')
+        subcategory = attrs.pop('subcategory_id') if 'subcategory_id' in attrs else None
 
         if subcategory and category and subcategory.category != category:
             raise ValidationError(

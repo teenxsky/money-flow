@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = int(os.getenv('DJANGO_DEBUG', True))
 ALLOWED_HOSTS = [
-    f'api.{os.getenv("DOMAIN_HOST")}',
+    os.getenv('BACKEND_BASE'),
 ]
 
 INSTALLED_APPS = [
@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'apps.reference',
     'apps.transactions',
     # Third-party apps
+    'corsheaders',
     'drf_yasg',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

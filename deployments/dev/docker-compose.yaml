@@ -5,16 +5,44 @@ services:
     container_name: nginx
     build:
       context: ../../
-      dockerfile: ./deployments/dev/image/nginx.Dockerfile
+      dockerfile: ./deployments/dev/images/nginx.Dockerfile
     command: ["nginx", "-g", "daemon off;"]
-    hostname: ${NGINX_HOST}
+    hostname: ${DOCKER_NGINX_HOST}
     ports:
       - ${NGINX_PORT}:${NGINX_PORT}
     environment:
-      - NGINX_HOST=${NGINX_HOST}
       - NGINX_PORT=${NGINX_PORT}
-      - DOMAIN_HOST=${DOMAIN_HOST}
-      - BACKEND_PORT=${BACKEND_PORT}
+
+      - DOCKER_NGINX_HOST=${DOCKER_NGINX_HOST}
+      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
+      - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
+
+      - BACKEND_BASE=${BACKEND_BASE}
+      - FRONTEND_BASE=${FRONTEND_BASE}
+
+      - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
+      - DOCKER_FRONTEND_PORT=${DOCKER_FRONTEND_PORT}
+    restart: unless-stopped
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../../
+      dockerfile: ./deployments/dev/images/frontend.Dockerfile
+    command: ["bun", "run", "dev", "--port", "${DOCKER_FRONTEND_PORT}"]
+    hostname: ${DOCKER_FRONTEND_HOST}
+    ports:
+      - ${DOCKER_FRONTEND_PORT}:${DOCKER_FRONTEND_PORT}
+    volumes:
+      - ./../../frontend:/frontend
+    environment:
+      - HOST=${DOCKER_FRONTEND_HOST}
+      - PORT=${DOCKER_FRONTEND_PORT}
     restart: unless-stopped
     depends_on:
       backend:
@@ -24,7 +52,7 @@ services:
     container_name: backend
     build:
       context: ../../
-      dockerfile: ./deployments/dev/image/backend.Dockerfile
+      dockerfile: ./deployments/dev/images/backend.Dockerfile
     command:
       [
         "poetry",
@@ -32,26 +60,30 @@ services:
         "python",
         "src/manage.py",
         "runserver",
-        "0.0.0.0:${BACKEND_PORT}",
+        "0.0.0.0:${DOCKER_BACKEND_PORT}",
       ]
-    hostname: ${BACKEND_HOST}
+    hostname: ${DOCKER_BACKEND_HOST}
     expose:
-      - ${BACKEND_PORT}
+      - ${DOCKER_BACKEND_PORT}
     volumes:
-      - ./../../backend/src:/backend/src
-      - ./../../backend/.venv:/backend/.venv
+      - ./../../backend:/backend
     environment:
+      - NGINX_PORT=${NGINX_PORT}
+      - BACKEND_BASE=${BACKEND_BASE}
+      - FRONTEND_BASE=${FRONTEND_BASE}
+
+      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
+      - DOCKER_POSTGRES_HOST=${DOCKER_POSTGRES_HOST}
+
+      - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
+      - DOCKER_POSTGRES_PORT=${DOCKER_POSTGRES_PORT}
+
       - TZ=${TZ}
-      - DOMAIN_HOST=${DOMAIN_HOST}
-      - BACKEND_HOST=${BACKEND_HOST}
-      - BACKEND_PORT=${BACKEND_PORT}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     env_file:
-    - ./conf/.env.backend.local
+      - ./conf/.env.backend.local
     depends_on:
       postgres:
         condition: service_healthy
@@ -60,17 +92,18 @@ services:
     container_name: postgres
     build:
       context: ../../
-      dockerfile: ./deployments/dev/image/postgres.Dockerfile
-    command: ["postgres", "-c", "port=${POSTGRES_PORT}"]
-    hostname: ${POSTGRES_HOST}
+      dockerfile: ./deployments/dev/images/postgres.Dockerfile
+    command: ["postgres", "-c", "port=${DOCKER_POSTGRES_PORT}"]
+    hostname: ${DOCKER_POSTGRES_HOST}
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - ${DOCKER_POSTGRES_PORT}:${DOCKER_POSTGRES_PORT}
     volumes:
       - pg-data:/var/lib/postgresql/data/
     environment:
+      - DOCKER_POSTGRES_HOST=${DOCKER_POSTGRES_HOST}
+      - DOCKER_POSTGRES_PORT=${DOCKER_POSTGRES_PORT}
+
       - TZ=${TZ}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -84,9 +117,9 @@ services:
           "-U",
           "${POSTGRES_USER}",
           "-h",
-          "${POSTGRES_HOST}",
+          "${DOCKER_POSTGRES_HOST}",
           "-p",
-          "${POSTGRES_PORT}",
+          "${DOCKER_POSTGRES_PORT}",
         ]
       interval: 10s
       timeout: 5s
