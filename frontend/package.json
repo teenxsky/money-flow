@@ -9,13 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "prettier --write .",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,html,css,vue}": [
-      "prettier --write .",
-      "git add"
-    ]
+    "lint": "prettier --check ."
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.22",

@@ -103,7 +103,7 @@ run-tests-app-dev: ## Run tests for the development environment
 	echo "Testing Django app: $$app_name" && \
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py test apps.$$app_name.tests"'
-	
+
 .PHONY: load_reference-data-dev
 load_reference-data-dev: ## Load reference data for the development environment
 	@$(COMPOSE_DEV) exec backend sh -c \
@@ -113,12 +113,22 @@ load_reference-data-dev: ## Load reference data for the development environment
 #--------------- LINT/FORMAT COMMANDS ---------------#
 
 
-.PHONY: run-lint
-run-lint: ## Run linting for the development environment
+.PHONY: run-backend-lint
+run-backend-lint: ## Run linting for backend code
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"poetry run ruff check --config=ruff.toml"
 
-.PHONY: run-formatter
-run-formatter: ## Format code for the development environment
+.PHONY: run-backend-formatter
+run-backend-formatter: ## Format backend code
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"poetry run ruff format --config=ruff.toml"
+
+.PHONY: run-frontend-lint
+run-frontend-lint: ## Run linting for frontend code
+	@$(COMPOSE_DEV) exec frontend sh -c \
+	"bun run lint"
+
+.PHONY: run-frontend-formatter
+run-frontend-formatter: ## Format frontend code
+	@$(COMPOSE_DEV) exec frontend sh -c \
+	"bun run format"
