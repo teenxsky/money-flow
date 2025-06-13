@@ -78,12 +78,14 @@ export const useTransactionsStore = defineStore('transactions', {
   getters: {
     filteredCategories: state => (transactionTypeId?: number) => {
       if (!transactionTypeId) return state.categories
-      return state.categories.filter(cat => cat.transaction_type_id === transactionTypeId)
+      return state.categories.filter(
+        (cat: Category) => cat.transaction_type_id === transactionTypeId
+      )
     },
 
     filteredSubcategories: state => (categoryId?: number) => {
       if (!categoryId) return state.subcategories
-      return state.subcategories.filter(sub => sub.category_id === categoryId)
+      return state.subcategories.filter((sub: Subcategory) => sub.category_id === categoryId)
     }
   },
 

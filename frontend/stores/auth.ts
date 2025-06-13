@@ -193,7 +193,7 @@ export const useAuthStore = defineStore('auth', {
         })
 
         this.user = user
-      }).catch(async error => {
+      }).catch(async (error: unknown) => {
         console.error('Fetch user error:', error)
         if (!(await this.refreshTokens())) {
           await this.logout()
