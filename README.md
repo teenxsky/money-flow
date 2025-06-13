@@ -1,28 +1,53 @@
 # Money Flow
 
+[![Python](https://img.shields.io/badge/python-3.13%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Made with Django](https://img.shields.io/badge/Django-5.x-success?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Nuxt.js](https://img.shields.io/badge/Nuxt.js-3.x-green?logo=nuxt.js&logoColor=white)](https://nuxt.com/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/github/license/teenxsky/money-flow?color=blue)](LICENSE)
+[![pre-commit enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+
 Money Flow is a financial management application that helps you track income, expenses, and manage your personal or business finances. It consists of a Django backend API, a web frontend, and is containerized with Docker for easy deployment.
+
+[![Money Flow Dashboard](https://iimg.su/s/13/pQRmfahc2OMFDndYuy2NY4dXSeKfWfZOEIcYSOGR.png)](https://iimg.su/i/Q3EtZR)
+
+[![Money Flow Login](https://iimg.su/s/13/gRunOctHzRMMNHC604zJT0TP949kOu396xBKggzY.png)](https://iimg.su/i/UrtMPV)
+
+
+## Tech Stack
+
+**Backend:**
+- Python 3.13+
+- Django (REST API)
+- PostgreSQL (database)
+
+**Frontend:**
+- Nuxt.js (Vue 3)
+- Tailwind CSS
+
 
 ## Project Structure
 
 - `backend/` - Django backend API
-- `frontend/` - Frontend application (to be implemented)
+- `frontend/` - Nuxt.js frontend
 - `deployments/` - Docker configuration for development and production environments
 
-## Prerequisites
+---
+
+## Production Setup (Quick Start)
+### Prerequisites
 
 Before you begin, ensure you have the following installed on your local machine:
 
-- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- [Python](https://www.python.org/downloads/) 3.13 or higher
-- [pre-commit](https://pre-commit.com/#install) for code quality checks
 - [Git](https://git-scm.com/downloads)
-
-## Development Setup
+- [GNU Make](https://www.gnu.org/software/make/)
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/teenxsky/money-flow.git
 cd money-flow
 ```
 
@@ -31,52 +56,58 @@ cd money-flow
 Create local environment files based on the examples:
 
 ```bash
-# Create environment file for development environment
-cd deployments/dev/conf
+cd deployments/prod/conf
 cp .env.docker .env.docker.local
 cp .env.backend .env.backend.local
 ```
 
-Be sure to fill in the missing fields in the resulting files.
+Fill in the required fields in newly created `.env.docker.local` and `.env.backend.local` files.
 
-### 3. Set up pre-commit
+### 3. Build and start the production environment
 
-Install pre-commit hooks:
-
-```bash
-cd backend
-pre-commit install
-```
-
-### 4. Start the development environment with Docker
+From the project root:
 
 ```bash
-cd money-flow
-make dev-up
+make build
+make up
 ```
 
-This will start:
+- To view logs in the foreground:
+  ```bash
+  make up-logs
+  ```
 
-- Nginx web server
-- Django backend
-- PostgreSQL database
+- To stop the production environment:
+  ```bash
+  make clean
+  ```
 
-### 5. Access the application
+- To remove volumes as well:
+  ```bash
+  make clean-volumes
+  ```
+
+- **To learn more about available commands**:
+  ```bash
+  make help
+  ```
+
+### 4. Access the application
 
 The application will be available at:
 
+- Frontend: http://localhost:80/
 - Backend API: http://api.localhost:80/
-- Admin panel: http://api.localhost:80/admin
+- Backend docs (Swagger UI): http://api.localhost:80/v1/docs/
+- Backend admin panel: http://api.localhost:80/admin
 
-## Common Development Commands
+You can also read the bakend documentation in the form of OpenAPI specification: [v1.yaml](backend/docs/v1.yaml).
 
-```bash
-# Start the development environment
-make up-dev
+---
 
-# Stop the development environment
-make down-dev
-```
+## Development Setup
+
+Read the development manual in the [DEV_GUIDE.md](DEV_GUIDE.md) file.
 
 ## License
 
