@@ -8,8 +8,8 @@ from apps.users.models import User
 class UserRegisterSerializer(Serializer):
     email = EmailField(required=True)
     password = CharField(required=True, validators=[validate_password])
-    first_name = CharField(required=False, max_length=50)
-    last_name = CharField(required=False, max_length=50)
+    first_name = CharField(required=True, max_length=50)
+    last_name = CharField(required=True, max_length=50)
 
     def validate_email(self, value):
         norm_email = value.lower()

@@ -30,14 +30,9 @@ RUN apk update && \
 
 WORKDIR /backend
 
-COPY $LOCAL_BACKEND_PATH/poetry.lock \
-    $LOCAL_BACKEND_PATH/poetry.toml \
-    $LOCAL_BACKEND_PATH/pyproject.toml \
-    /backend/
-
 RUN python -m pip install --no-cache-dir poetry==$POETRY_VERSION \
     && poetry self add poetry-plugin-shell
 
-COPY $LOCAL_DEPLOYMENT_PATH/script/backend.sh /backend/backend.sh
-RUN chmod +x /backend/backend.sh
-ENTRYPOINT ["/backend/backend.sh"]
+COPY $LOCAL_DEPLOYMENT_PATH/entrypoints/backend.sh /backend.sh
+RUN chmod +x /backend.sh
+ENTRYPOINT ["/backend.sh"]

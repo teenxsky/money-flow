@@ -30,8 +30,8 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, db_index=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    first_name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50, blank=True)
+    first_name = models.CharField(max_length=50, blank=True, null=False)
+    last_name = models.CharField(max_length=50, blank=True, null=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

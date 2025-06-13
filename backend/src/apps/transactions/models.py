@@ -30,6 +30,8 @@ class Transaction(models.Model):
         Subcategory,
         on_delete=models.PROTECT,
         related_name='transactions',
+        null=True,
+        blank=True,
     )
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     comment = models.CharField(max_length=50, blank=True, null=True)
