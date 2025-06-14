@@ -9,9 +9,11 @@ services:
     command: ["nginx", "-g", "daemon off;"]
     hostname: ${DOCKER_NGINX_HOST}
     ports:
-      - ${NGINX_PORT}:${NGINX_PORT}
+      - ${APP_PORT}:${APP_PORT}
     environment:
-      - NGINX_PORT=${NGINX_PORT}
+      - TZ=${TZ}
+
+      - APP_PORT=${APP_PORT}
       - DOCKER_NGINX_HOST=${DOCKER_NGINX_HOST}
       - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
       - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
@@ -32,14 +34,14 @@ services:
     build:
       context: ../../
       dockerfile: ./deployments/dev/images/frontend.Dockerfile
-    command: ["bun", "run", "dev", "--port", "${DOCKER_FRONTEND_PORT}"]
+    command: ["bun", "run", "dev"]
     hostname: ${DOCKER_FRONTEND_HOST}
     expose:
       - ${DOCKER_FRONTEND_PORT}
     volumes:
       - ./../../frontend:/frontend
     environment:
-      - NODE_MODE=development
+      - NUXT_PUBLIC_API_BASE_URL=http://${BACKEND_BASE}:${APP_PORT}
       - HOST=${DOCKER_FRONTEND_HOST}
       - PORT=${DOCKER_FRONTEND_PORT}
     restart: unless-stopped
@@ -67,7 +69,7 @@ services:
     volumes:
       - ./../../backend:/backend
     environment:
-      - NGINX_PORT=${NGINX_PORT}
+      - APP_PORT=${APP_PORT}
       - BACKEND_BASE=${BACKEND_BASE}
       - FRONTEND_BASE=${FRONTEND_BASE}
 
@@ -99,9 +101,6 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data/
     environment:
-      - DOCKER_POSTGRES_HOST=${DOCKER_POSTGRES_HOST}
-      - DOCKER_POSTGRES_PORT=${DOCKER_POSTGRES_PORT}
-
       - TZ=${TZ}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}

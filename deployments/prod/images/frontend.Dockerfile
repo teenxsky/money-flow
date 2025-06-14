@@ -1,6 +1,8 @@
 FROM oven/bun:1.2-alpine AS build-stage
 WORKDIR /frontend
 
+ARG NUXT_PUBLIC_API_BASE_URL
+
 COPY ./frontend/package.json .
 COPY ./frontend/bun.lock .
 RUN bun install
