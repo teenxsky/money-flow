@@ -27,20 +27,7 @@ class UserRegisterView(APIView):
         operation_description='Creates a new user account with email, password, '
         'and optional name details',
         security=[],
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['email', 'password'],
-            properties={
-                'email': openapi.Schema(
-                    type=openapi.TYPE_STRING, example='user@example.com'
-                ),
-                'password': openapi.Schema(
-                    type=openapi.TYPE_STRING, example='SecurePassword123'
-                ),
-                'first_name': openapi.Schema(type=openapi.TYPE_STRING, example='John'),
-                'last_name': openapi.Schema(type=openapi.TYPE_STRING, example='Doe'),
-            },
-        ),
+        request_body=serializer_class,
         responses={
             201: openapi.Response(
                 description='User created successfully',
@@ -98,18 +85,7 @@ class UserLoginView(APIView):
         operation_description='Authenticates a user with email and password, '
         'returns access and refresh tokens',
         security=[],
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['email', 'password'],
-            properties={
-                'email': openapi.Schema(
-                    type=openapi.TYPE_STRING, example='user@example.com'
-                ),
-                'password': openapi.Schema(
-                    type=openapi.TYPE_STRING, example='SecurePassword123'
-                ),
-            },
-        ),
+        request_body=serializer_class,
         responses={
             200: openapi.Response(
                 description='User logged in successfully with tokens',
@@ -196,16 +172,7 @@ class UserLogoutView(APIView):
         operation_description="Blacklists the user's refresh token, "
         'effectively logging them out',
         security=[],
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['refresh'],
-            properties={
-                'refresh': openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    example='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
-                ),
-            },
-        ),
+        request_body=serializer_class,
         responses={
             200: openapi.Response(
                 description='User logged out successfully',
@@ -270,21 +237,7 @@ class UserDetailView(APIView):
         responses={
             200: openapi.Response(
                 description='User details retrieved successfully',
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(type=openapi.TYPE_INTEGER, example=1),
-                        'email': openapi.Schema(
-                            type=openapi.TYPE_STRING, example='user@example.com'
-                        ),
-                        'first_name': openapi.Schema(
-                            type=openapi.TYPE_STRING, example='John'
-                        ),
-                        'last_name': openapi.Schema(
-                            type=openapi.TYPE_STRING, example='Doe'
-                        ),
-                    },
-                ),
+                schema=serializer_class,
             ),
             401: openapi.Response(
                 description='Authentication credentials were not provided',

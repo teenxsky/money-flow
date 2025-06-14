@@ -621,17 +621,7 @@ paths:
           in: body
           required: true
           schema:
-            required:
-              - email
-              - password
-            type: object
-            properties:
-              email:
-                type: string
-                example: user@example.com
-              password:
-                type: string
-                example: SecurePassword123
+            $ref: "#/definitions/UserLogin"
       responses:
         "200":
           description: User logged in successfully with tokens
@@ -685,13 +675,7 @@ paths:
           in: body
           required: true
           schema:
-            required:
-              - refresh
-            type: object
-            properties:
-              refresh:
-                type: string
-                example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+            $ref: "#/definitions/UserLogout"
       responses:
         "200":
           description: User logged out successfully
@@ -726,20 +710,7 @@ paths:
         "200":
           description: User details retrieved successfully
           schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                example: 1
-              email:
-                type: string
-                example: user@example.com
-              first_name:
-                type: string
-                example: John
-              last_name:
-                type: string
-                example: Doe
+            $ref: "#/definitions/UserDetail"
         "401":
           description: Authentication credentials were not provided
           schema:
@@ -785,23 +756,7 @@ paths:
           in: body
           required: true
           schema:
-            required:
-              - email
-              - password
-            type: object
-            properties:
-              email:
-                type: string
-                example: user@example.com
-              password:
-                type: string
-                example: SecurePassword123
-              first_name:
-                type: string
-                example: John
-              last_name:
-                type: string
-                example: Doe
+            $ref: "#/definitions/UserRegister"
       responses:
         "201":
           description: User created successfully
@@ -1150,6 +1105,56 @@ definitions:
         title: Comment
         type: string
         maxLength: 50
+  UserLogin:
+    required:
+      - email
+      - password
+    type: object
+    properties:
+      email:
+        title: Email
+        type: string
+        format: email
+        minLength: 1
+      password:
+        title: Password
+        type: string
+        minLength: 1
+  UserLogout:
+    required:
+      - refresh
+    type: object
+    properties:
+      refresh:
+        title: Refresh
+        type: string
+        minLength: 1
+  UserDetail:
+    required:
+      - id
+      - email
+      - first_name
+      - last_name
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+      email:
+        title: Email
+        type: string
+        format: email
+        minLength: 1
+      first_name:
+        title: First name
+        type: string
+        maxLength: 50
+        minLength: 1
+      last_name:
+        title: Last name
+        type: string
+        maxLength: 50
+        minLength: 1
   TokenRefresh:
     required:
       - refresh
@@ -1163,4 +1168,31 @@ definitions:
         title: Access
         type: string
         readOnly: true
+        minLength: 1
+  UserRegister:
+    required:
+      - email
+      - password
+      - first_name
+      - last_name
+    type: object
+    properties:
+      email:
+        title: Email
+        type: string
+        format: email
+        minLength: 1
+      password:
+        title: Password
+        type: string
+        minLength: 1
+      first_name:
+        title: First name
+        type: string
+        maxLength: 50
+        minLength: 1
+      last_name:
+        title: Last name
+        type: string
+        maxLength: 50
         minLength: 1
