@@ -10,8 +10,8 @@
 
 Money Flow is a financial management application that helps you track income, expenses, and manage your personal or business finances. It consists of a Django backend API, a web frontend, and is containerized with Docker for easy deployment.
 
-![Money Flow Dashboard](screenshots/dashboard.png)
-![Money Flow Login](screenshots/login.png)
+![Money Flow Dashboard](screenshots/dashboard.jpeg)
+![Money Flow Login](screenshots/login.jpeg)
 
 ## Tech Stack
 
