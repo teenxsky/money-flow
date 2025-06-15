@@ -152,8 +152,6 @@ export const useAuthStore = defineStore('auth', {
           }
         }
 
-        console.log(result)
-
         return Object.keys(result).length > 0 ? result : null
       }
 
@@ -208,19 +206,24 @@ export const useAuthStore = defineStore('auth', {
       const config = useRuntimeConfig()
 
       try {
-        const response = await $fetch<{ access: string }>(
+        const response = await $fetch<{ access: string; refresh: string }>(
           `${config.public.apiBase}/v1/users/refresh/`,
           {
             method: 'POST',
-            body: { refresh: this.refreshToken }
+            body: { refresh: this.refreshToken },
+            headers: {
+              Authorization: `Bearer ${this.token}`
+            }
           }
         )
 
         this.token = response.access
+        this.refreshToken = response.refresh
         this.isAuthenticated = true
 
         if (process.client) {
           localStorage.setItem('auth_token', response.access)
+          localStorage.setItem('refresh_token', response.refresh)
         }
 
         return true
