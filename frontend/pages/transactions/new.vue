@@ -1,129 +1,133 @@
 <template>
-  <div class="max-w-2xl mx-auto">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="text-lg font-medium text-gray-900">Create New Transaction</h3>
-      </div>
-      <div class="card-body">
-        <form @submit.prevent="createTransaction" class="space-y-6">
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Transaction Type *</label>
-              <select
-                v-model="form.transaction_type_id"
-                class="input-field"
-                required
-                @change="onTransactionTypeChange"
-              >
-                <option value="">Select type</option>
-                <option
-                  v-for="type in transactionsStore.transactionTypes"
-                  :key="type.id"
-                  :value="type.id"
+  <div class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-2xl">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-lg font-medium text-gray-900">Create New Transaction</h3>
+        </div>
+        <div class="card-body">
+          <form @submit.prevent="createTransaction" class="space-y-6">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Transaction Type *</label>
+                <select
+                  v-model="form.transaction_type_id"
+                  class="input-field"
+                  required
+                  @change="onTransactionTypeChange"
                 >
-                  {{ type.name }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Status *</label>
-              <select v-model="form.status_id" class="input-field" required>
-                <option value="">Select status</option>
-                <option
-                  v-for="status in transactionsStore.statuses"
-                  :key="status.id"
-                  :value="status.id"
-                >
-                  {{ status.name }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Category *</label>
-              <select
-                v-model="form.category_id"
-                class="input-field"
-                required
-                @change="onCategoryChange"
-                :disabled="!form.transaction_type_id"
-              >
-                <option value="">Select category</option>
-                <option
-                  v-for="category in filteredCategories"
-                  :key="category.id"
-                  :value="category.id"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Subcategory</label>
-              <select
-                v-model="form.subcategory_id"
-                class="input-field"
-                :disabled="!form.category_id"
-              >
-                <option value="">Select subcategory (optional)</option>
-                <option
-                  v-for="subcategory in filteredSubcategories"
-                  :key="subcategory.id"
-                  :value="subcategory.id"
-                >
-                  {{ subcategory.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Amount *</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="text-gray-500 sm:text-sm">$</span>
+                  <option value="">Select type</option>
+                  <option
+                    v-for="type in transactionsStore.transactionTypes"
+                    :key="type.id"
+                    :value="type.id"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
               </div>
-              <input
-                v-model="form.amount"
-                type="number"
-                step="0.01"
-                min="0"
-                class="input-field pl-7"
-                placeholder="0.00"
-                required
-              />
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status *</label>
+                <select v-model="form.status_id" class="input-field" required>
+                  <option value="">Select status</option>
+                  <option
+                    v-for="status in transactionsStore.statuses"
+                    :key="status.id"
+                    :value="status.id"
+                  >
+                    {{ status.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Category *</label>
+                <select
+                  v-model="form.category_id"
+                  class="input-field"
+                  required
+                  @change="onCategoryChange"
+                  :disabled="!form.transaction_type_id"
+                >
+                  <option value="">Select category</option>
+                  <option
+                    v-for="category in filteredCategories"
+                    :key="category.id"
+                    :value="category.id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Subcategory</label>
+                <select
+                  v-model="form.subcategory_id"
+                  class="input-field"
+                  :disabled="!form.category_id"
+                >
+                  <option value="">Select subcategory (optional)</option>
+                  <option
+                    v-for="subcategory in filteredSubcategories"
+                    :key="subcategory.id"
+                    :value="subcategory.id"
+                  >
+                    {{ subcategory.name }}
+                  </option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Comment</label>
-            <textarea
-              v-model="form.comment"
-              rows="3"
-              class="input-field"
-              placeholder="Optional comment about this transaction"
-              maxlength="50"
-            ></textarea>
-            <p class="mt-1 text-sm text-gray-500">{{ form.comment?.length || 0 }}/50 characters</p>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Amount *</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-gray-500 sm:text-sm">$</span>
+                </div>
+                <input
+                  v-model="form.amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  class="input-field pl-7"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
 
-          <div class="flex justify-end space-x-3">
-            <NuxtLink to="/dashboard" class="btn-secondary">Cancel</NuxtLink>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span
-                v-if="loading"
-                class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"
-              ></span>
-              {{ loading ? 'Creating...' : 'Create Transaction' }}
-            </button>
-          </div>
-        </form>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Comment</label>
+              <textarea
+                v-model="form.comment"
+                rows="3"
+                class="input-field"
+                placeholder="Optional comment about this transaction"
+                maxlength="50"
+              ></textarea>
+              <p class="mt-1 text-sm text-gray-500">
+                {{ form.comment?.length || 0 }}/50 characters
+              </p>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+              <NuxtLink to="/dashboard" class="btn-secondary">Cancel</NuxtLink>
+              <button
+                type="submit"
+                :disabled="loading"
+                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span
+                  v-if="loading"
+                  class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"
+                ></span>
+                {{ loading ? 'Creating...' : 'Create Transaction' }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

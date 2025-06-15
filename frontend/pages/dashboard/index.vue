@@ -252,6 +252,11 @@
                   Status
                 </th>
                 <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Comment
+                </th>
+                <th
                   class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Actions
@@ -288,13 +293,29 @@
                     {{ transaction.status_name }}
                   </span>
                 </td>
+                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                  <div v-if="transaction.comment" class="truncate" :title="transaction.comment">
+                    {{ transaction.comment }}
+                  </div>
+                  <div v-else class="text-gray-400 italic">No comment</div>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    @click="deleteTransaction(transaction.id)"
-                    class="text-red-600 hover:text-red-900 transition-colors duration-200"
-                  >
-                    <TrashIcon class="w-4 h-4" />
-                  </button>
+                  <div class="flex items-center justify-end space-x-5">
+                    <button
+                      @click="editTransaction(transaction.id)"
+                      class="text-primary-600 hover:text-primary-900 transition-colors duration-200"
+                      title="Edit transaction"
+                    >
+                      <PencilIcon class="w-4 h-4" />
+                    </button>
+                    <button
+                      @click="deleteTransaction(transaction.id)"
+                      class="text-red-600 hover:text-red-900 transition-colors duration-200"
+                      title="Delete transaction"
+                    >
+                      <TrashIcon class="w-4 h-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -303,6 +324,13 @@
       </div>
     </div>
   </div>
+
+  <TransactionEditModal
+    :is-open="editModalOpen"
+    :transaction-id="selectedTransactionId"
+    @close="closeEditModal"
+    @updated="onTransactionUpdated"
+  />
 </template>
 
 <script setup>
@@ -314,7 +342,8 @@
     DocumentTextIcon,
     PlusIcon,
     TrashIcon,
-    ArrowRightOnRectangleIcon
+    ArrowRightOnRectangleIcon,
+    PencilIcon
   } from '@heroicons/vue/24/outline'
 
   definePageMeta({
@@ -340,6 +369,9 @@
     sort_field: 'created_at',
     sort_order: 'desc'
   })
+
+  const editModalOpen = ref(false)
+  const selectedTransactionId = ref(null)
 
   const totalIncome = computed(() => {
     return transactionsStore.transactions
@@ -419,6 +451,20 @@
     }
     transactionsStore.clearFilters()
     transactionsStore.fetchTransactions()
+  }
+
+  const editTransaction = id => {
+    selectedTransactionId.value = id
+    editModalOpen.value = true
+  }
+
+  const closeEditModal = () => {
+    editModalOpen.value = false
+    selectedTransactionId.value = null
+  }
+
+  const onTransactionUpdated = () => {
+    console.log('Transaction updated successfully')
   }
 
   const deleteTransaction = async id => {

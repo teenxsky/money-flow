@@ -154,3 +154,4 @@ class TransactionListSerializer(serializers.Serializer):
         source='subcategory.name', read_only=True, allow_null=True
     )
     amount = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
+    comment = serializers.CharField(read_only=True)

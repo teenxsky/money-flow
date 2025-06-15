@@ -35,11 +35,11 @@ interface Transaction {
   subcategory_id: string | null
   subcategory_name: string | null
   amount: string
+  comment: string | null
 }
 
 interface TransactionDetail extends Transaction {
   user_email: string
-  comment: string
 }
 
 interface TransactionFilters {
@@ -78,49 +78,68 @@ export const useTransactionsStore = defineStore('transactions', {
   getters: {
     filteredCategories: state => (transactionTypeId?: number) => {
       if (!transactionTypeId) return state.categories
-      return state.categories.filter(
-        (cat: Category) => cat.transaction_type_id === transactionTypeId
-      )
+      return state.categories.filter(cat => cat.transaction_type_id === transactionTypeId)
     },
 
     filteredSubcategories: state => (categoryId?: number) => {
       if (!categoryId) return state.subcategories
-      return state.subcategories.filter((sub: Subcategory) => sub.category_id === categoryId)
+      return state.subcategories.filter(sub => sub.category_id === categoryId)
     }
   },
 
   actions: {
     async fetchTransactions() {
       const authStore = useAuthStore()
-      if (!authStore.token) return
-
       this.loading = true
       const config = useRuntimeConfig()
 
-      console.log(this.filters)
-
       try {
-        const params = new URLSearchParams()
-        Object.entries(this.filters).forEach(([key, value]) => {
-          if (value !== undefined && value !== null && value !== '') {
-            params.append(key, String(value))
-          }
+        return await authStore.requestWithAuth(async () => {
+          const params = new URLSearchParams()
+          Object.entries(this.filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+              params.append(key, String(value))
+            }
+          })
+
+          const url = `${config.public.apiBase}/v1/transactions/?${params.toString()}`
+
+          const transactions = await $fetch<Transaction[]>(url, {
+            headers: {
+              Authorization: `Bearer ${authStore.token}`
+            }
+          })
+
+          this.transactions = transactions
+          return transactions
         })
-
-        const url = `${config.public.apiBase}/v1/transactions/?${params.toString()}`
-
-        const transactions = await $fetch<Transaction[]>(url, {
-          headers: {
-            Authorization: `Bearer ${authStore.token}`
-          }
-        })
-
-        this.transactions = transactions
       } catch (error) {
         console.error('Fetch transactions error:', error)
         throw error
       } finally {
         this.loading = false
+      }
+    },
+
+    async fetchTransactionById(id: number) {
+      const authStore = useAuthStore()
+      const config = useRuntimeConfig()
+
+      try {
+        return await authStore.requestWithAuth(async () => {
+          const transaction = await $fetch<TransactionDetail>(
+            `${config.public.apiBase}/v1/transactions/${id}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${authStore.token}`
+              }
+            }
+          )
+          return transaction
+        })
+      } catch (error) {
+        console.error('Fetch transaction error:', error)
+        throw error
       }
     },
 
@@ -154,8 +173,6 @@ export const useTransactionsStore = defineStore('transactions', {
       comment?: string
     }) {
       const authStore = useAuthStore()
-      if (!authStore.token) throw new Error('Not authenticated')
-
       const config = useRuntimeConfig()
 
       try {
@@ -178,10 +195,42 @@ export const useTransactionsStore = defineStore('transactions', {
       }
     },
 
+    async updateTransaction(
+      id: number,
+      transactionData: {
+        status_id?: number
+        transaction_type_id?: number
+        category_id?: number
+        subcategory_id?: number | null
+        amount?: string
+        comment?: string
+      }
+    ) {
+      const authStore = useAuthStore()
+      const config = useRuntimeConfig()
+
+      try {
+        const transaction = await $fetch<TransactionDetail>(
+          `${config.public.apiBase}/v1/transactions/${id}/`,
+          {
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${authStore.token}`
+            },
+            body: transactionData
+          }
+        )
+
+        await this.fetchTransactions()
+        return transaction
+      } catch (error) {
+        console.error('Update transaction error:', error)
+        throw error
+      }
+    },
+
     async deleteTransaction(id: number) {
       const authStore = useAuthStore()
-      if (!authStore.token) throw new Error('Not authenticated')
-
       const config = useRuntimeConfig()
 
       try {

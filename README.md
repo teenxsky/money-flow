@@ -10,22 +10,21 @@
 
 Money Flow is a financial management application that helps you track income, expenses, and manage your personal or business finances. It consists of a Django backend API, a web frontend, and is containerized with Docker for easy deployment.
 
-[![Money Flow Dashboard](https://iimg.su/s/13/pQRmfahc2OMFDndYuy2NY4dXSeKfWfZOEIcYSOGR.png)](https://iimg.su/i/Q3EtZR)
-
-[![Money Flow Login](https://iimg.su/s/13/gRunOctHzRMMNHC604zJT0TP949kOu396xBKggzY.png)](https://iimg.su/i/UrtMPV)
-
+![Money Flow Dashboard](screenshots/dashboard.png)
+![Money Flow Login](screenshots/login.png)
 
 ## Tech Stack
 
 **Backend:**
+
 - Python 3.13+
 - Django (REST API)
 - PostgreSQL (database)
 
 **Frontend:**
+
 - Nuxt.js (Vue 3)
 - Tailwind CSS
-
 
 ## Project Structure
 
@@ -36,6 +35,7 @@ Money Flow is a financial management application that helps you track income, ex
 ---
 
 ## Production Setup (Quick Start)
+
 ### Prerequisites
 
 Before you begin, ensure you have the following installed on your local machine:
@@ -73,16 +73,19 @@ make up
 ```
 
 - To view logs in the foreground:
+
   ```bash
   make up-logs
   ```
 
 - To stop the production environment:
+
   ```bash
   make clean
   ```
 
 - To remove volumes as well:
+
   ```bash
   make clean-volumes
   ```
@@ -102,6 +105,7 @@ The application will be available at:
 - Backend admin panel: http://api.localhost:80/admin
 
 You can also read the backend documentation in form of OpenAPI specification: [v1.yaml](backend/docs/v1.yaml).
+Or you can look at the screenshot of the Swagger UI documentation: [v1.jpeg](backend/docs/v1.jpeg). 
 
 ---
 
